@@ -1,0 +1,22 @@
+
+//Converter functions usable in the observer-arrays
+
+_GUI_HEADER_valueConverterFunction( _GUI_valueConverter_Negate );
+
+_GUI_HEADER_valueConverterFunction( _GUI_valueConverter_VersionNumbers );
+
+_GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomeMainValue );
+_GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomePumpFlowAmount );
+_GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomePumpRuntime );
+
+_GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getCompressibilityValue );
+
+_GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getPumpPartRuntime );
+
+_GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getUSBsatusBit );
+
+_GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getEthernetStatusBit );
+
+_GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getWiFiStatusBit );
+
+
