@@ -8,5 +8,5 @@
  #include "GUI_API_Variables.h"
 #undef EXTERN
 
-#include "GUI_API_Functions.h"
+#include "GUI_API_Events.h"
 

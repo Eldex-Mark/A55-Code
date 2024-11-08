@@ -36,7 +36,7 @@ static _GUI_HEADER_valueConverterFunction( _GUI_refreshMaintenancePumpSelection 
 
 
 
-_GUI_Modifier _GUI_Modifiers__Maintenance [] = {
+_GUI_Modifier _GUI_Modifiers__Maintenance [] = { //Reminders: Alarms will show in the message center blinking on all screens. Main Alarm Reminder label: constant text: „Alarm Reminder” (checking/textmodding handled by frontend or backend?}
  { _GUI_SUBJECT_TYPE__UINT16P, &IOp.AlarmLifetime__Pump1_CheckValve, &ui_Textarea__Maintenance__PumpPart_RuntimeReminder_Period, _GUI_valueConverter_getAlarmLifetime, _GUI_valueConverter_setAlarmLifetime, }, //_GUI_valueConverter_IntToText, _GUI_valueConverter_TextToInt },
  { _GUI_SUBJECT_TYPE__UINT8P, &IOp.Washport_AutoStartStop, &ui_Switch__Maintenance__Washport_Auto, NULL, NULL },
  { _GUI_SUBJECT_TYPE__UINT8,  &_GUI.Maintenance__PumpPart, &ui_Roller__Maintenance__PumpPart,      NULL, _GUI_refreshMaintenancePumpSelection },
@@ -58,6 +58,23 @@ void _GUI_clicked__Button__Maintenance__Pump2 (lv_event_t* event) {
 void _GUI_clicked__Button__Maintenance__Pump3 (lv_event_t* event) {
     _GUI.SelectedPump__Maintenance = 2;
     _GUI_display_PumpSelection__Maintenance();
+}
+
+void _GUI_clicked__Button__Maintenance__Washport_Rinse (lv_event_t* event) {
+    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Maintenance__Washport_Rinse );
+}
+
+void _GUI_clicked__Button__Maintenance__Reset_PumpPart_Runtime (lv_event_t* event) {
+    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Maintenance__Reset_PumpPart_Runtime );
+}
+
+void _GUI_clicked__Button__Maintenance__ZeroPressure_Transducer (lv_event_t* event) {
+    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Maintenance__ZeroPressure_Transducer );
+}
+
+void _GUI_clicked__Button__Maintenance__Sensor_MoveMotorsHome (lv_event_t* event) {
+    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Maintenance__Sensor_MoveMotorsHome );
+    _GUI_displayPopupScreen( 1? "Success" : "Failed", "",  "", -1,  "OK", GUI_SCREEN_ID__Maintenance ); //GUI_SCREEN_ID__BACK
 }
 
 

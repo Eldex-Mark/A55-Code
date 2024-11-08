@@ -1,6 +1,41 @@
 
 //Events:
 
+enum {
+    GUI_TO_BACKEND_EVENT__Burn_in_the_Test_button,
+    GUI_TO_BACKEND_EVENT__Next_button, //on Initial Setup screen, if event needed at all to save (I added a variable to set/request that first init was done already)
+
+    GUI_TO_BACKEND_EVENT__Select_Options_Ok_button, //if event needed at all to save
+
+    GUI_TO_BACKEND_EVENT__Generic_Password__Ok_button, //if event needed at all to save
+
+    GUI_TO_BACKEND_EVENT__Up_button,
+    GUI_TO_BACKEND_EVENT__Down_button,
+    GUI_TO_BACKEND_EVENT__Purge_button,
+    GUI_TO_BACKEND_EVENT__StartStop_button,
+
+    //GUI_TO_BACKEND_EVENT__Dispense_button, //no such button
+    //GUI_TO_BACKEND_EVENT__Dispense_toggle, //needed? no such switch/checkbox (except mode-settting dropdown on Pump Settings screen)
+
+    GUI_TO_BACKEND_EVENT__FactoryReset,
+
+    GUI_TO_BACKEND_EVENT__Rinse_button,
+    GUI_TO_BACKEND_EVENT__Reset_button,
+    GUI_TO_BACKEND_EVENT__Zero_Press_Transducer_button,
+    GUI_TO_BACKEND_EVENT__Sensor_Home_Button,
+
+    GUI_TO_BACKEND_EVENT__WiFi_Connect,
+    GUI_TO_BACKEND_EVENT__WiFi_ForgetConnection,
+
+    GUI_TO_BACKEND_EVENT__Run_Self_Test_button,
+    GUI_TO_BACKEND_EVENT__Save_To_Flash_drive_button,
+
+    GUI_TO_BACKEND_EVENT__Update_on_the_web_Button,
+    GUI_TO_BACKEND_EVENT__Update_from_flash_drive_button,
+
+    GUI_TO_BACKEND_EVENT__AMOUNT //must be last
+};
+
 
 //Initial Set-Up (Factory Menu) screen:
 //This screen sets up basic pump and device settings. These settings will be set in the factory. This screen comes up

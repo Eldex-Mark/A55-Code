@@ -23,7 +23,10 @@ void _GUI_clicked__Button__Generic_Password__OK (lv_event_t* event) {
     switch (_GUI.PasswordScreen_Mode) {
         case _GUI_PASSWORD_SCREEN_MODE__ENTER_FACTORY: PasswordMatches = !strcmp( EnteredText, (char*) IOp.FactoryPassword ); break;
         case _GUI_PASSWORD_SCREEN_MODE__ENTER_USER: PasswordMatches = !strcmp( EnteredText, (char*) IOp.UserPassword ); break;
-        case _GUI_PASSWORD_SCREEN_MODE__CHANGE_REMOTE: strncpy( (char*) IOp.RemoteControlPassword, EnteredText, BACKEND_PASSWORD_LENGTH_MAX ); PasswordMatches = true; break;
+        case _GUI_PASSWORD_SCREEN_MODE__CHANGE_REMOTE:
+            strncpy( (char*) IOp.RemoteControlPassword, EnteredText, BACKEND_PASSWORD_LENGTH_MAX ); PasswordMatches = true;
+            _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Generic_Password__OK__RemoteControlPassword_Changed );
+        break;
     }
     if (PasswordMatches) {
         _GUI_loadScreenByID( _GUI.PasswordScreen_TargetScreenID );

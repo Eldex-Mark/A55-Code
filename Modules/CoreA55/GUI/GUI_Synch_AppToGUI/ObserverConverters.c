@@ -6,7 +6,7 @@
 //Converter functions usable in the observer-arrays
 
 _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_Negate ) { //bool
-    *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT; return (_GUI_ValueContainer) { .Int = input_value.Int ^ 1 };
+    *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT; return (_GUI_ValueContainer) { .Int = input_value.Int? 0:1 /* ^ 1 */ };
 }
 
 

@@ -98,25 +98,22 @@ struct IOpointers IOp = {
     //struct DateTime_p_t
     .DateAndTime = { .Year = BACKEND_POINTER_ DateTime.Year, .Month = BACKEND_POINTER_ DateTime.Month, .Day = BACKEND_POINTER_ DateTime.Day, .Hour = BACKEND_POINTER_ DateTime.Hour, .Minute = BACKEND_POINTER_ DateTime.Minute }, //.DateAndTime = BACKEND_POINTER_ DateTime,
 
-  //Firmware Update (Advanced Setup 1) screen:
-    .FirmwareUpdate_ProgressPercentage = BACKEND_POINTER_ FirmwareUpdate_Progress_Bar,
-
   //Maintenance (Advanced Setup 2) screen:
-    .TotalRunHours__Pump1_CheckValve = BACKEND_POINTER_ Pump1_CheckValve_RunTime,
-    .TotalRunHours__Pump2_CheckValve = BACKEND_POINTER_ Pump2_CheckValve_RunTime,
-    .TotalRunHours__Pump3_CheckValve = BACKEND_POINTER_ Pump3_CheckValve_RunTime,
     .TotalRunHours_Pump1 = BACKEND_POINTER_ Pump_1_Total_Run,
     //.TotalRunHours_Pump2 = BACKEND_POINTER_ Pump_2_Total_Run,
     //.TotalRunHours_Pump3 = BACKEND_POINTER_ Pump_3_Total_Run,
     .TotalRunHours__Pump1_PistonSeal = BACKEND_POINTER_ Pump1_Seal_RunTime,
     .TotalRunHours__Pump2_PistonSeal = BACKEND_POINTER_ Pump2_Seal_RunTime,
     .TotalRunHours__Pump3_PistonSeal = BACKEND_POINTER_ Pump3_Seal_RunTime,
-    .AlarmLifetime__Pump1_CheckValve = BACKEND_POINTER_ Pump1_Check_Valve_Alarm,
-    .AlarmLifetime__Pump2_CheckValve = BACKEND_POINTER_ Pump2_Check_Valve_Alarm,
-    .AlarmLifetime__Pump3_CheckValve = BACKEND_POINTER_ Pump3_Check_Valve_Alarm,
     .AlarmLifetime__Pump1_PistonSeal = BACKEND_POINTER_ Pump1_Total_Seal_Alarm,
     .AlarmLifetime__Pump2_PistonSeal = BACKEND_POINTER_ Pump2_Total_Seal_Alarm,
     .AlarmLifetime__Pump3_PistonSeal = BACKEND_POINTER_ Pump3_Total_Seal_Alarm,
+    .TotalRunHours__Pump1_CheckValve = BACKEND_POINTER_ Pump1_CheckValve_RunTime,
+    .TotalRunHours__Pump2_CheckValve = BACKEND_POINTER_ Pump2_CheckValve_RunTime,
+    .TotalRunHours__Pump3_CheckValve = BACKEND_POINTER_ Pump3_CheckValve_RunTime,
+    .AlarmLifetime__Pump1_CheckValve = BACKEND_POINTER_ Pump1_Check_Valve_Alarm,
+    .AlarmLifetime__Pump2_CheckValve = BACKEND_POINTER_ Pump2_Check_Valve_Alarm,
+    .AlarmLifetime__Pump3_CheckValve = BACKEND_POINTER_ Pump3_Check_Valve_Alarm,
     .Washport_AutoStartStop = BACKEND_POINTER_ Washport_Auto,
 
   //Communications (Advanced Setup 4) screen:
@@ -149,6 +146,9 @@ struct IOpointers IOp = {
   //Self Test (Advanced Setup 5) screen:
     .SelfTest_ConsoleLog = BACKEND_NAMESPACE_ TextBuffer,
     .SelfTest_Progress_Percentage = BACKEND_POINTER_ SelfTest_ProgressBar,
+
+  //Firmware Update (Advanced Setup 1) screen:
+    .FirmwareUpdate_ProgressPercentage = BACKEND_POINTER_ FirmwareUpdate_Progress_Bar,
 
   /* //Data Recorder (Advanced Setup 3) screen:
     //struct AdvancedSetup3_bits_p_t

@@ -55,10 +55,7 @@ void _GUI_initScreenValues__Pump_Settings (lv_event_t* event) {
 
 
 void _GUI_initScreenValues__Advanced_Settings (lv_event_t* event) {
-}
-
-
-void _GUI_initScreenValues__Firmware_Update (lv_event_t* event) {
+    _GUI_hideWidget( ui_Keyboard__Advanced_Settings__PressureAlarmInterval_Entry );
 }
 
 
@@ -78,6 +75,15 @@ void _GUI_initScreenValues__Self_Test (lv_event_t* event) {
 
 
 void _GUI_initScreenValues__Communications (lv_event_t* event) {
+    _GUI_hideWidget( ui_Keyboard__Communications__WiFi_AuthenticationDataEntry );
+    lv_keyboard_set_textarea( ui_Keyboard__Communications__Ethernet_IPAddressEntry, NULL );
+}
 
+
+void _GUI_initScreenValues__Firmware_Update (lv_event_t* event) {
+}
+
+
+void _GUI_initScreenValues__Popup_Modal (lv_event_t* event) {
 }
 

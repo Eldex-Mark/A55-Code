@@ -44,6 +44,11 @@ typedef enum {
     _GUI_SUBJECT_TYPE__STRING_START,
     _GUI_SUBJECT_TYPE__STRING, //static (constant) string-pointer
     _GUI_SUBJECT_TYPE__STRINGP, //static (constant) string-pointer-pointer
+    _GUI_SUBJECT_TYPE__STRINGP_OTHERKEYBOARD, //workaround to assign a keyboard other than the 1st one found on the screen
+    _GUI_SUBJECT_TYPE__STRINGARRAYP, //has the size of a single element in 'previous value' field
+    _GUI_SUBJECT_TYPE__ARRAY,  //array address
+    _GUI_SUBJECT_TYPE__ARRAYP,  //array-pointer address
+    _GUI_SUBJECT_TYPE__ARRAY_NOHIDE, //a workaround not to hide keyboard for this input-type (so no need to have a specific field in descriptor)
     _GUI_SUBJECT_TYPE__POINTER, //changing string/etc-pointer
     _GUI_SUBJECT_TYPE__STRING_END,
 
@@ -61,6 +66,7 @@ typedef enum { //to override default? - but formatting string already does that
     _GUI_DISPLAYED_TYPE__NORMAL,
     _GUI_DISPLAYED_TYPE__PLACEHOLDER,
     _GUI_DISPLAYED_TYPE__SHOW_HIDE, //BOOL
+    _GUI_DISPLAYED_TYPE__DISABLE, //BOOL
     //_GUI_DISPLAYED_TYPE__INNERLABEL,
     //_GUI_DISPLAYED_TYPE__INT,
     //_GUI_DISPLAYED_TYPE__FLOAT,

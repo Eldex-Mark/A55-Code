@@ -601,6 +601,7 @@ void ui_Screen__Popup_Modal_screen_init(void);
 lv_obj_t * ui_Screen__Popup_Modal;
 lv_obj_t * ui_Popup__Popup_Modal__Popup;
 // CUSTOM VARIABLES
+lv_obj_t * ui_Panel__Popup_Modal__Full;
 lv_obj_t * ui_Label__Popup_Modal__Title;
 lv_obj_t * ui_Label__Popup_Modal__Text;
 lv_obj_t * ui_Button__Popup_Modal__Left;

@@ -7,10 +7,11 @@ extern _GUI_Modifier _GUI_Modifiers__Generic_Password [];
 extern _GUI_Modifier _GUI_Modifiers__Home [];
 extern _GUI_Modifier _GUI_Modifiers__Pump_Settings [];
 extern _GUI_Modifier _GUI_Modifiers__Advanced_Settings [];
-extern _GUI_Modifier _GUI_Modifiers__Firmware_Update [];
 extern _GUI_Modifier _GUI_Modifiers__Maintenance [];
-extern _GUI_Modifier _GUI_Modifiers__Self_Test [];
 extern _GUI_Modifier _GUI_Modifiers__Communications [];
+extern _GUI_Modifier _GUI_Modifiers__Self_Test [];
+extern _GUI_Modifier _GUI_Modifiers__Firmware_Update [];
+extern _GUI_Modifier _GUI_Modifiers__Popup_Modal [];
 
 
 //These functions don't need binding because they're internal to the GUI but use variables/functions presented by the binding
@@ -25,14 +26,20 @@ void _GUI_clicked__Button__Initial_Setup__Pump1 (lv_event_t* event);
 void _GUI_clicked__Button__Initial_Setup__Pump2 (lv_event_t* event);
 void _GUI_clicked__Button__Initial_Setup__Pump3 (lv_event_t* event);
 void _GUI_clicked__Button__Initial_Setup__Next (lv_event_t* event);
+
 void _GUI_editSerialNumber ();
 void _GUI_clicked__Textarea__Initial_Setup__Serial_Number (lv_event_t* event);
 void _GUI_editModelNumber ();
 void _GUI_clicked__Textarea__Initial_Setup__Model_Number (lv_event_t* event);
+
 void _GUI_clicked__Button__Initial_Setup__ChangeRemotePassword (lv_event_t* event);
 void _GUI_clicked__Button__Initial_Setup__SelectOptions (lv_event_t* event);
+void _GUI_clicked__Button__Initial_Setup__FactoryTest (lv_event_t* event);
+
+void _GUI_clicked__Button__Select_Option__OK  (lv_event_t* event);
 
 void _GUI_clicked__Button__Advanced_Settings__FactoryMenu (lv_event_t* event);
+void _GUI_clicked__Button__Advanced_Settings__FactoryReset (lv_event_t* event);
 
 void _GUI_clicked__Button__Generic_Password__Cancel (lv_event_t* event);
 void _GUI_clicked__Button__Generic_Password__OK (lv_event_t* event);
@@ -41,9 +48,10 @@ void _GUI_clicked__Keyboard__Generic_Password__PasswordEntry (lv_event_t* event)
 void _GUI_clicked__Button__Home__Pump1 (lv_event_t* event);
 void _GUI_clicked__Button__Home__Pump2 (lv_event_t* event);
 void _GUI_clicked__Button__Home__Pump3 (lv_event_t* event);
-void _GUI_clicked__Button__Home__StartStop (lv_event_t* event);
 void _GUI_pressing__Button__Home__FlowOrPressure_Up (lv_event_t* event);
 void _GUI_pressing__Button__Home__FlowOrPressure_Down (lv_event_t* event);
+void _GUI_clicked__Button__Home__Purge (lv_event_t* event);
+void _GUI_clicked__Button__Home__StartStop (lv_event_t* event);
 
 void _GUI_clicked__Button__Pump_Settings__Pump1 (lv_event_t* event);
 void _GUI_clicked__Button__Pump_Settings__Pump2 (lv_event_t* event);
@@ -52,10 +60,23 @@ void _GUI_clicked__Button__Pump_Settings__Pump3 (lv_event_t* event);
 void _GUI_clicked__Button__Maintenance__Pump1 (lv_event_t* event);
 void _GUI_clicked__Button__Maintenance__Pump2 (lv_event_t* event);
 void _GUI_clicked__Button__Maintenance__Pump3 (lv_event_t* event);
+void _GUI_clicked__Button__Maintenance__Washport_Rinse (lv_event_t* event);
+void _GUI_clicked__Button__Maintenance__Reset_PumpPart_Runtime (lv_event_t* event);
+void _GUI_clicked__Button__Maintenance__ZeroPressure_Transducer (lv_event_t* event);
+void _GUI_clicked__Button__Maintenance__Sensor_MoveMotorsHome (lv_event_t* event);
 
 void _GUI_clicked__Button__Communications__Serial (lv_event_t* event);
 void _GUI_clicked__Button__Communications__Ethernet (lv_event_t* event);
 void _GUI_clicked__Button__Communications__WiFi (lv_event_t* event);
+void _GUI_clicked__Button__Communications__WiFi_Connect (lv_event_t* event);
+void _GUI_clicked__Button__Communications__WiFi_ForgetConnection (lv_event_t* event);
+void _GUI_changed__Roller__Communications__WiFi_SSIDlist (lv_event_t* event);
+
+void _GUI_clicked__Button__Firmware_Update__UpdateFromWeb (lv_event_t* event);
+void _GUI_clicked__Button__Firmware_Update__UpdateFromFlashdrive (lv_event_t* event);
+
+void _GUI_clicked__Button__Self_Test__Run_SelfTest (lv_event_t* event);
+void _GUI_clicked__Button__Self_Test__SaveToFlashdrive (lv_event_t* event);
 
 
 //Selector callback-functions:

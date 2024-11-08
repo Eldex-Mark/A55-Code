@@ -25,7 +25,9 @@ typedef enum GUI_ScreenIDs {
     GUI_SCREEN_ID__Maintenance,
     GUI_SCREEN_ID__Self_Test,
     GUI_SCREEN_ID__Communications,
-    GUI_SCREEN_AMOUNT //Should be at the end of screen-list! (and 1st list-element's value should be 0)
+    GUI_SCREEN_ID__Popup_Modal,
+    GUI_SCREEN_AMOUNT, //Should be at the end of screen-list! (and 1st list-element's value should be 0)
+    GUI_SCREEN_ID__BACK, //back to previous screen
 } GUI_ScreenIDs;
 
 

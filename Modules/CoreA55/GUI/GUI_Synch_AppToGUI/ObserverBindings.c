@@ -42,9 +42,9 @@ _GUI_Observer _GUI_Observers__Generic_Password [] = {
 
 _GUI_Observer _GUI_Observers__Home [] = {
  { _GUI_SUBJECT_TYPE__UINT16P, &IOp.Pressure_Target, &ui_Label__Home__MainValue, _GUI_valueConverter_getHomeMainValue, "", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },
- { _GUI_SUBJECT_TYPE__FLOATP, &IOp.FlowRate_Pump1, &ui_Label__Home__MainValue, _GUI_valueConverter_getHomeMainValue, "%.1f", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },
- { _GUI_SUBJECT_TYPE__FLOATP, &IOp.FlowRate_Pump2, &ui_Label__Home__MainValue, _GUI_valueConverter_getHomeMainValue, "%.1f", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },
- { _GUI_SUBJECT_TYPE__FLOATP, &IOp.FlowRate_Pump3, &ui_Label__Home__MainValue, _GUI_valueConverter_getHomeMainValue, "%.1f", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },
+ { _GUI_SUBJECT_TYPE__FLOATP, &IOp.FlowRate_Pump1, &ui_Label__Home__MainValue, _GUI_valueConverter_getHomeMainValue, "%.3f", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },
+ { _GUI_SUBJECT_TYPE__FLOATP, &IOp.FlowRate_Pump2, &ui_Label__Home__MainValue, _GUI_valueConverter_getHomeMainValue, "%.3f", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },
+ { _GUI_SUBJECT_TYPE__FLOATP, &IOp.FlowRate_Pump3, &ui_Label__Home__MainValue, _GUI_valueConverter_getHomeMainValue, "%.3f", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },
  { _GUI_SUBJECT_TYPE__UINT16P, &IOp.Pressure_Pump1,  &ui_Label__Home__CurrentPressure, NULL,   "", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },
  { _GUI_SUBJECT_TYPE__FLOATP, &IOp.FlowAmount_Pump1,  &ui_Label__Home__Total_PumpedFlowAmount, _GUI_valueConverter_getHomePumpFlowAmount,   "%.0f ml", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },
  { _GUI_SUBJECT_TYPE__FLOATP, &IOp.FlowAmount_Pump2,  &ui_Label__Home__Total_PumpedFlowAmount, _GUI_valueConverter_getHomePumpFlowAmount,   "%.0f ml", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },
@@ -84,15 +84,6 @@ _GUI_Observer _GUI_Observers__Advanced_Settings [] = {
 };
 
 
-_GUI_Observer _GUI_Observers__Firmware_Update [] = {
- { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Firmware_Update__USB_Status,      _GUI_valueConverter_getUSBsatusBit,       NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
- { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Firmware_Update__Ethernet_Status, _GUI_valueConverter_getEthernetStatusBit, NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
- { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Firmware_Update__WiFi_Status,     _GUI_valueConverter_getWiFiStatusBit,     NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
- { _GUI_SUBJECT_TYPE__STRINGP, &IOp.FooterText,  &ui_Label__Firmware_Update__StatusFooter, NULL,  "",  _GUI_DISPLAYED_TYPE__NORMAL,  { .Pointer=_GUI.FooterText_previous } },
- { _GUI_SUBJECT_TYPE__END, NULL, NULL, NULL, NULL, _GUI_DISPLAYED_TYPE__NONE, {0} }
-};
-
-
 _GUI_Observer _GUI_Observers__Maintenance [] = {
  { _GUI_SUBJECT_TYPE__UINT16P, &IOp.Serial_Number,  &ui_Textarea__Maintenance__SerialNumber, NULL,  "%d",  _GUI_DISPLAYED_TYPE__NORMAL,  { 0 } },
  { _GUI_SUBJECT_TYPE__UINT16P, &IOp.Model_Number,   &ui_Textarea__Maintenance__ModelNumber, NULL,   "%d",  _GUI_DISPLAYED_TYPE__NORMAL,  { 0 } },
@@ -115,7 +106,24 @@ _GUI_Observer _GUI_Observers__Maintenance [] = {
 };
 
 
+_GUI_Observer _GUI_Observers__Communications [] = {
+ { _GUI_SUBJECT_TYPE__UINT8, &_GUI.WiFi_HiddenNetwork,  &ui_Container__Communications__WiFi__SSID/*ui_Container__Communications__WiFi__LeftSide*/,   NULL,  NULL,  _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8, &_GUI.WiFi_HiddenNetwork,  &ui_Container__Communications__WiFi__SSIDlist/*ui_Container__Communications__WiFi__RightSide*/,   _GUI_valueConverter_Negate,  NULL,  _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
+
+ { _GUI_SUBJECT_TYPE__ARRAYP, &IOp.WiFiConnectionList, &ui_Roller__Communications__WiFi_SSIDlist, NULL, NULL, _GUI_DISPLAYED_TYPE__NORMAL, { .Int = 50*32 } },
+
+ { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Communications__USB_Status,      _GUI_valueConverter_getUSBsatusBit,       NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Communications__Ethernet_Status, _GUI_valueConverter_getEthernetStatusBit, NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Communications__WiFi_Status,     _GUI_valueConverter_getWiFiStatusBit,     NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
+ { _GUI_SUBJECT_TYPE__STRINGP, &IOp.FooterText,  &ui_Label__Communications__StatusFooter, NULL,  "",  _GUI_DISPLAYED_TYPE__NORMAL,  { .Pointer=_GUI.FooterText_previous } },
+ { _GUI_SUBJECT_TYPE__END, NULL, NULL, NULL, NULL, _GUI_DISPLAYED_TYPE__NONE, {0} }
+};
+
+
 _GUI_Observer _GUI_Observers__Self_Test [] = {
+ { _GUI_SUBJECT_TYPE__ARRAYP, &IOp.SelfTest_ConsoleLog,  &ui_Textarea__Self_Test__SelfTest_LogConsole,  NULL,  "%s",  _GUI_DISPLAYED_TYPE__NORMAL,  { .Int = 10 * 45 } },
+ { _GUI_SUBJECT_TYPE__UINT8P, &IOp.SelfTest_Progress_Percentage, &ui_Button__Self_Test__SaveToFlashdrive, NULL, "",   _GUI_DISPLAYED_TYPE__DISABLE,  { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8P, &IOp.SelfTest_Progress_Percentage, &ui_Button__Self_Test__Run_SelfTest, NULL, "",   _GUI_DISPLAYED_TYPE__DISABLE,  { 0 } },
  { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Self_Test__USB_Status,      _GUI_valueConverter_getUSBsatusBit,       NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
  { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Self_Test__Ethernet_Status, _GUI_valueConverter_getEthernetStatusBit, NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
  { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Self_Test__WiFi_Status,     _GUI_valueConverter_getWiFiStatusBit,     NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
@@ -124,14 +132,21 @@ _GUI_Observer _GUI_Observers__Self_Test [] = {
 };
 
 
-_GUI_Observer _GUI_Observers__Communications [] = {
- { _GUI_SUBJECT_TYPE__UINT8, &_GUI.WiFi_HiddenNetwork,  &ui_Container__Communications__WiFi__LeftSide,   NULL,  NULL,  _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
- { _GUI_SUBJECT_TYPE__UINT8, &_GUI.WiFi_HiddenNetwork,  &ui_Container__Communications__WiFi__RightSide,   _GUI_valueConverter_Negate,  NULL,  _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
+_GUI_Observer _GUI_Observers__Firmware_Update [] = {
+ { _GUI_SUBJECT_TYPE__UINT16P, &IOp.Firmware_Version, &ui_Label__Firmware_Update__CurrentVersion, _GUI_valueConverter_VersionNumbers,  "Current version: %2.2f",  _GUI_DISPLAYED_TYPE__NORMAL, { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8P, &IOp.FirmwareUpdate_ProgressPercentage, &ui_Container__Firmware_Update__UpdateProgress, NULL,                       "", _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8P, &IOp.FirmwareUpdate_ProgressPercentage, &ui_Container__Firmware_Update__Start,          _GUI_valueConverter_Negate, "", _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8P, &IOp.FirmwareUpdate_ProgressPercentage, &ui_Container__Firmware_Update__StartQuestion,  _GUI_valueConverter_Negate, "", _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8P, &IOp.FirmwareUpdate_ProgressPercentage, &ui_Bar__Firmware_Update__InstallationProgress, NULL, "", _GUI_DISPLAYED_TYPE__NORMAL, { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Firmware_Update__USB_Status,      _GUI_valueConverter_getUSBsatusBit,       NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Firmware_Update__Ethernet_Status, _GUI_valueConverter_getEthernetStatusBit, NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Firmware_Update__WiFi_Status,     _GUI_valueConverter_getWiFiStatusBit,     NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
+ { _GUI_SUBJECT_TYPE__STRINGP, &IOp.FooterText,  &ui_Label__Firmware_Update__StatusFooter, NULL,  "",  _GUI_DISPLAYED_TYPE__NORMAL,  { .Pointer=_GUI.FooterText_previous } },
+ { _GUI_SUBJECT_TYPE__END, NULL, NULL, NULL, NULL, _GUI_DISPLAYED_TYPE__NONE, {0} }
+};
 
- { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Communications__USB_Status,      _GUI_valueConverter_getUSBsatusBit,       NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
- { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Communications__Ethernet_Status, _GUI_valueConverter_getEthernetStatusBit, NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
- { _GUI_SUBJECT_TYPE__UINT8P, &IOp.ConnectionStates,  &ui_Image__Communications__WiFi_Status,     _GUI_valueConverter_getWiFiStatusBit,     NULL, _GUI_DISPLAYED_TYPE__SHOW_HIDE,   { 0 } },
- { _GUI_SUBJECT_TYPE__STRINGP, &IOp.FooterText,  &ui_Label__Communications__StatusFooter, NULL,  "",  _GUI_DISPLAYED_TYPE__NORMAL,  { .Pointer=_GUI.FooterText_previous } },
+
+_GUI_Observer _GUI_Observers__Popup_Modal [] = {
  { _GUI_SUBJECT_TYPE__END, NULL, NULL, NULL, NULL, _GUI_DISPLAYED_TYPE__NONE, {0} }
 };
 

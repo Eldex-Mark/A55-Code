@@ -10,6 +10,11 @@ _GUI_Modifier _GUI_Modifiers__Select_Option [] = {
 
 
 
+void _GUI_clicked__Button__Select_Option__OK  (lv_event_t* event) {
+    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Select_Option__OK );
+}
+
+
 void _GUI_changed__Checkbox__Select_Option__PressureTransducer (lv_event_t* event) {
     IOp.OptionalEquipment->Pressure_Transducer = _GUI_getWidgetCheckedState( ui_Checkbox__Select_Option__PressureTransducer );
 }

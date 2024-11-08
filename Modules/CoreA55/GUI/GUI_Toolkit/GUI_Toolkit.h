@@ -21,6 +21,9 @@ char* _GUI_convertIntToText (int number);
 char* _GUI_convertFloatToText (float number);
 int _GUI_convertTextToInt (char* text);
 float _GUI_convertTextToFloat (char* text);
+char* _GUI_convertIPaddressToText (uint8_t* address);
+void _GUI_convertTextToIPaddress (char* text, uint8_t* address);
+char* _GUI_convertStringArrayToList (char* source_strings, int sourcearray_size);
 
 int _GUI_handleKeyRepeat (lv_indev_t* input, bool pressed, int repeat_delay, int repeat_rate, int repeat_rate_min);
 
@@ -40,8 +43,10 @@ bool _GUI_getWidgetFocusedState (lv_obj_t* widget);
 
 void _GUI_showWidget (lv_obj_t* widget);
 void _GUI_hideWidget (lv_obj_t* widget);
+void _GUI_enableWidget (lv_obj_t* widget);
 void _GUI_disableWidget (lv_obj_t* widget);
 void _GUI_conditionalShowWidget (lv_obj_t* widget, bool condition);
+void _GUI_conditionalEnableWidget (lv_obj_t* widget, bool condition);
 
 void _GUI_setWidgetText (lv_obj_t* widget, char* text);
 void _GUI_setWidgetPlaceholderText (lv_obj_t* widget, char* text);
@@ -79,7 +84,9 @@ void _GUI_setDefocusCallbackWithPointer (lv_obj_t* widget, void (*function)(), v
 uint16_t _GUI_getSelectorIndex (lv_obj_t* selector_widget);
 void _GUI_setSelectorIndex (lv_obj_t* selector_widget, uint16_t index);
 char* _GUI_getSelectorOption (lv_obj_t* selector_widget);
+//void _GUI_clearSelectorOptions (lv_obj_t* selector_widget, char* options );
 void _GUI_createSelectorOptions (lv_obj_t* selector_widget, char* options);
+void _GUI_createSelectorOptionsFromStringArray (lv_obj_t* selector_widget, char* source_stringarray, int sourcearray_size);
 void _GUI_createSelectorOptions_Integer (lv_obj_t* selector_widget, short min, short max, short step, char* indent);
 
 

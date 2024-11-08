@@ -99,7 +99,13 @@ void _GUI_clicked__Button__Home__Pump3 (lv_event_t* event) {
 
 void _GUI_clicked__Button__Home__StartStop (lv_event_t* event) {
     *IOp.RunTime_Pump1 = *IOp.RunTime_Pump2 = *IOp.RunTime_Pump3 = 0;
-    *IOp.FlowAmount_Pump1 = *IOp.FlowAmount_Pump2 = *IOp.FlowAmount_Pump3 = 0;
+    *IOp.FlowAmount_Pump1 = *IOp.FlowAmount_Pump2 = *IOp.FlowAmount_Pump3 = 0; //or/and send event?
+    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Home__StartStop );
+}
+
+void _GUI_clicked__Button__Home__Purge (lv_event_t* event) {
+    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Home__Purge );
+    _GUI_displayPopupScreen( "", "Do you want to start the purge process?", "Cancel", GUI_SCREEN_ID__Home, "Confirm", GUI_SCREEN_ID__Home ); //GUI_SCREEN_ID__BACK
 }
 
 
@@ -123,6 +129,7 @@ void _GUI_pressing__Button__Home__FlowOrPressure_Up (lv_event_t* event) {
             }
         break;
     }
+    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Home__FlowOrPressure_Up );
 }
 
 void _GUI_pressing__Button__Home__FlowOrPressure_Down (lv_event_t* event) {
@@ -147,6 +154,7 @@ void _GUI_pressing__Button__Home__FlowOrPressure_Down (lv_event_t* event) {
             }
         break;
     }
+    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Home__FlowOrPressure_Down );
 }
 
 

@@ -366,7 +366,7 @@ EXTERN struct __attribute__((aligned(1))) WiFiSettings_t {
 //-Run Self-Test Button: Starts the self-test. Froze the screen while the process except the scrollbar. Popup at the end: „The test has ended” with an OK button
 //-Save to Flash Drive button: It only appears after the test ends. This button will be enabled only after the test has ended. After the save show a popup: („The output of the test has successfully saved on the root of the flash drive with this name: optos_test_log.txt”, „Ok”)
 
-EXTERN uint8_t TextBuffer [45][10]; //10 lines of 45 char  Event: Start //-Self-Test Data Textarea (Only Readable): This is a console showing the process. It needs a scrollbar.
+EXTERN uint8_t TextBuffer [10][45]; //10 lines of 45 char  Event: Start //-Self-Test Data Textarea (Only Readable): This is a console showing the process. It needs a scrollbar.
 
 EXTERN uint8_t SelfTest_ProgressBar; //0 to 100
 

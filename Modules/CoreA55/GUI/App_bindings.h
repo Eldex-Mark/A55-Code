@@ -91,25 +91,22 @@ struct IOpointers {
     uint16_t *const PressureAlarm_LowerThreshold;
     struct DateTime_p_t { uint16_t *const Year; uint8_t *const Month; uint8_t *const Day; uint8_t *const Hour; uint8_t *const Minute; } DateAndTime;
 
-  //Firmware Update (Advanced Setup 1) screen:
-    uint8_t *const FirmwareUpdate_ProgressPercentage;
-
   //Maintenance (Advanced Setup 2) screen:
-    uint16_t *const TotalRunHours__Pump1_CheckValve;
-    uint16_t *const TotalRunHours__Pump2_CheckValve;
-    uint16_t *const TotalRunHours__Pump3_CheckValve;
     uint32_t *const TotalRunHours_Pump1;
     //uint32_t *const TotalRunHours_Pump2;
     //uint32_t *const TotalRunHours_Pump3;
     uint16_t *const TotalRunHours__Pump1_PistonSeal;
     uint16_t *const TotalRunHours__Pump2_PistonSeal;
     uint16_t *const TotalRunHours__Pump3_PistonSeal;
-    uint16_t *const AlarmLifetime__Pump1_CheckValve;
-    uint16_t *const AlarmLifetime__Pump2_CheckValve;
-    uint16_t *const AlarmLifetime__Pump3_CheckValve;
     uint16_t *const AlarmLifetime__Pump1_PistonSeal;
     uint16_t *const AlarmLifetime__Pump2_PistonSeal;
     uint16_t *const AlarmLifetime__Pump3_PistonSeal;
+    uint16_t *const TotalRunHours__Pump1_CheckValve;
+    uint16_t *const TotalRunHours__Pump2_CheckValve;
+    uint16_t *const TotalRunHours__Pump3_CheckValve;
+    uint16_t *const AlarmLifetime__Pump1_CheckValve;
+    uint16_t *const AlarmLifetime__Pump2_CheckValve;
+    uint16_t *const AlarmLifetime__Pump3_CheckValve;
     uint8_t *const Washport_AutoStartStop;
 
   //Communications (Advanced Setup 4) screen:
@@ -134,14 +131,17 @@ struct IOpointers {
     uint8_t *const WiFi_Password; //[32];
     //struct WiFiConnectionDetails_p_t { uint8_t *const Security_Type : 2; } WiFiConnectionDetails_p_t;
     struct  WiFiConnectionDetails_t *const WiFiConnectionDetails;
-    uint8_t (*const WiFiConnectionList) [32];
+    uint8_t (*const WiFiConnectionList) [32]; //*50
     struct WiFiConnectionDetails_t *const WiFiConnectionList_NetworkDetails; //[50];
     //struct WiFiSettings_p_t { uint8_t *const Automatic_connection : 1; uint8_t *const Remote_Connection : 1; } WiFiSettings_p_t;
     struct  WiFiSettings_t *const WiFiSettings;
 
   //Self Test (Advanced Setup 5) screen:
-    uint8_t (*const SelfTest_ConsoleLog) [10];
+    uint8_t (*const SelfTest_ConsoleLog) [45]; //*10
     uint8_t *const SelfTest_Progress_Percentage;
+
+  //Firmware Update (Advanced Setup 1) screen:
+    uint8_t *const FirmwareUpdate_ProgressPercentage;
 
   /* //Data Recorder (Advanced Setup 3) screen:
     struct AdvancedSetup3_bits_p_t { uint8_t *const Flow : 1; uint8_t *const Pressure : 1; uint8_t *const Run : 1; } AdvancedSetup3_bits_p_t;
@@ -171,3 +171,40 @@ struct IOpointers {
 //enum {
     //_APP_LANGUAGE_ID__ENGISH = LANG_ENGLISH,
 //};
+
+
+
+//GUI-to-Application Event-ID bindings:
+
+enum {
+    _GUI_TO_BACKEND_EVENT__Initial_Setup__FactoryTest = GUI_TO_BACKEND_EVENT__Burn_in_the_Test_button,
+    _GUI_TO_BACKEND_EVENT__Initial_Setup__Next = GUI_TO_BACKEND_EVENT__Next_button, //on Initial Setup screen, if event needed at all to save (I added a variable to set/request that first init was done already)
+
+    _GUI_TO_BACKEND_EVENT__Select_Option__OK = GUI_TO_BACKEND_EVENT__Select_Options_Ok_button, //if event needed at all to save
+
+    _GUI_TO_BACKEND_EVENT__Generic_Password__OK__RemoteControlPassword_Changed = GUI_TO_BACKEND_EVENT__Generic_Password__Ok_button, //if event needed at all to save
+
+    _GUI_TO_BACKEND_EVENT__Home__FlowOrPressure_Up = GUI_TO_BACKEND_EVENT__Up_button,
+    _GUI_TO_BACKEND_EVENT__Home__FlowOrPressure_Down = GUI_TO_BACKEND_EVENT__Down_button,
+    _GUI_TO_BACKEND_EVENT__Home__Purge = GUI_TO_BACKEND_EVENT__Purge_button,
+    _GUI_TO_BACKEND_EVENT__Home__StartStop = GUI_TO_BACKEND_EVENT__StartStop_button,
+    //_GUI_TO_BACKEND_EVENT__ = GUI_TO_BACKEND_EVENT__Dispense_button, //no such button
+    //_GUI_TO_BACKEND_EVENT__ = GUI_TO_BACKEND_EVENT__Dispense_toggle, //needed? no such switch/checkbox (except mode-settting dropdown on Pump Settings screen)
+
+    _GUI_TO_BACKEND_EVENT__Advanced_Settings__FactoryReset = GUI_TO_BACKEND_EVENT__FactoryReset,
+
+    _GUI_TO_BACKEND_EVENT__Maintenance__Washport_Rinse = GUI_TO_BACKEND_EVENT__Rinse_button,
+    _GUI_TO_BACKEND_EVENT__Maintenance__Reset_PumpPart_Runtime = GUI_TO_BACKEND_EVENT__Reset_button,
+    _GUI_TO_BACKEND_EVENT__Maintenance__ZeroPressure_Transducer = GUI_TO_BACKEND_EVENT__Zero_Press_Transducer_button,
+    _GUI_TO_BACKEND_EVENT__Maintenance__Sensor_MoveMotorsHome = GUI_TO_BACKEND_EVENT__Sensor_Home_Button,
+
+    _GUI_TO_BACKEND_EVENT__Communications__WiFi_Connect = GUI_TO_BACKEND_EVENT__WiFi_Connect,
+    _GUI_TO_BACKEND_EVENT__Communications__WiFi_ForgetConnection = GUI_TO_BACKEND_EVENT__WiFi_ForgetConnection,
+
+    _GUI_TO_BACKEND_EVENT__Self_Test__Run_SelfTest = GUI_TO_BACKEND_EVENT__Run_Self_Test_button,
+    _GUI_TO_BACKEND_EVENT__Self_Test__SaveToFlashdrive = GUI_TO_BACKEND_EVENT__Save_To_Flash_drive_button,
+
+    _GUI_TO_BACKEND_EVENT__Firmware_Update__UpdateFromWeb = GUI_TO_BACKEND_EVENT__Update_on_the_web_Button,
+    _GUI_TO_BACKEND_EVENT__Firmware_Update__UpdateFromFlashdrive = GUI_TO_BACKEND_EVENT__Update_from_flash_drive_button,
+
+};

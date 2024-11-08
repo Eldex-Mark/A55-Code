@@ -18,7 +18,7 @@ At the moment only the main logic of the inter-processor communication is made, 
 You can try out these pre-compiled executables, there are Windows, Linux executables as well es the one ending with `-board` which can be run on the Renesas devboard.
 (The others are the sparated core-specific versions but they don't fully work due the incomplete low-level part of the inter-CPU communication. We'll priorize for this if you want to test the actual inter-Core communication asap.)
 
-The easiest-to-run pre-compiled version is the 'TestBench.html' emscripten-built version, runnable from any browsers, and the necessary `GUI/assets` folder is embedded to it, you won't have any problem with paths/etc.
+The easiest-to-run pre-compiled version is the `TestBench.html` emscripten-built version, runnable from any browsers, and the necessary `GUI/assets` folder is embedded to it, you won't have any problem with paths/etc.
 
 
 Building the project happens on linux with CMake on our side, the CMakeLists.txt file can handle various hosts and targets.

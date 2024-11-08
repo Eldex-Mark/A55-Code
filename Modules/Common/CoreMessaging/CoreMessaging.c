@@ -1,12 +1,17 @@
 
+#include <stdlib.h> //for malloc(), etc.
 #include <stdio.h> //for printf(), etc.
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h> //for memcpy(), etc.
 
 #include "CoreMessaging.h"
 
 
-static CoreMessaging_EndPoint CoreMessaging_EndPoints [COREMESSAGING_ENDPOINT_AMOUNT];
+
+static CoreMessaging_EndPointDescriptor CoreMessaging_EndPoints [COREMESSAGING_ENDPOINT_AMOUNT];
+
+static CoreMessaging_EventDescriptor CoreMessaging_Events [COREMESSAGING_ENDPOINT_AMOUNT] [COREMESSAGING_EVENT_AMOUNT_MAX];
 
 
 
@@ -52,28 +57,29 @@ static inline CoreMessaging_ValueContainer CoreMessaging_castVariableToValue (Co
 
 
 __attribute__((always_inline))
-static inline void CoreMessaging_castValueToVariable (CoreMessaging_VariableTypes type, CoreMessaging_ValueContainer value, void* variable_pointer) {
+static inline size_t CoreMessaging_castValueToVariable (CoreMessaging_VariableTypes type, CoreMessaging_ValueContainer value, void* variable_pointer) {
     if ( CoreMessaging_getTypeClass( type ) == COREMESSAGING_VARIABLE_TYPE_CATEGORY__INT ) {
         switch (type) { //might take advantage of computed goto for faster operation
-            case COREMESSAGING_VARIABLE_TYPE__BOOL:    * (bool*)     variable_pointer  =  (bool)     value.Int;  break;
-            case COREMESSAGING_VARIABLE_TYPE__INT8:    * (int8_t*)   variable_pointer  =  (int8_t)   value.Int;  break;
-            case COREMESSAGING_VARIABLE_TYPE__UINT8:   * (uint8_t*)  variable_pointer  =  (uint8_t)  value.Int;  break;
-            case COREMESSAGING_VARIABLE_TYPE__INT16:   * (int16_t*)  variable_pointer  =  (int16_t)  value.Int;  break;
-            case COREMESSAGING_VARIABLE_TYPE__UINT16:  * (uint16_t*) variable_pointer  =  (uint16_t) value.Int;  break;
-            case COREMESSAGING_VARIABLE_TYPE__INT32:   * (int32_t*)  variable_pointer  =  (int32_t)  value.Int;  break;
-            case COREMESSAGING_VARIABLE_TYPE__UINT32:  * (uint32_t*) variable_pointer  =  (uint32_t) value.Uint;  break;
+            case COREMESSAGING_VARIABLE_TYPE__BOOL:    if (variable_pointer!=NULL)  * (bool*)     variable_pointer  =  (bool)     value.Int;  return sizeof( bool );
+            case COREMESSAGING_VARIABLE_TYPE__INT8:    if (variable_pointer!=NULL)  * (int8_t*)   variable_pointer  =  (int8_t)   value.Int;  return sizeof( int8_t );
+            case COREMESSAGING_VARIABLE_TYPE__UINT8:   if (variable_pointer!=NULL)  * (uint8_t*)  variable_pointer  =  (uint8_t)  value.Int;  return sizeof( uint8_t );
+            case COREMESSAGING_VARIABLE_TYPE__INT16:   if (variable_pointer!=NULL)  * (int16_t*)  variable_pointer  =  (int16_t)  value.Int;  return sizeof( int16_t );
+            case COREMESSAGING_VARIABLE_TYPE__UINT16:  if (variable_pointer!=NULL)  * (uint16_t*) variable_pointer  =  (uint16_t) value.Int;  return sizeof( uint16_t );
+            case COREMESSAGING_VARIABLE_TYPE__INT32:   if (variable_pointer!=NULL)  * (int32_t*)  variable_pointer  =  (int32_t)  value.Int;  return sizeof( int32_t );
+            case COREMESSAGING_VARIABLE_TYPE__UINT32:  if (variable_pointer!=NULL)  * (uint32_t*) variable_pointer  =  (uint32_t) value.Uint;  return sizeof( uint32_t );
             default: break;
         }
     }
     else { //if ( CoreMessaging_getTypeClass( type ) == COREMESSAGING_VARIABLE_TYPE_CATEGORY__FLOAT ) {
         switch (type) { //might take advantage of computed goto for faster operation
-            case COREMESSAGING_VARIABLE_TYPE__FLOAT:   * (float*)    variable_pointer  =  (float)    value.Float;  break;
+            case COREMESSAGING_VARIABLE_TYPE__FLOAT:   if (variable_pointer!=NULL)  * (float*)    variable_pointer  =  (float)    value.Float;  return sizeof( float );
            #if (COREMESSAGING_VARIABLE_TYPE__DOUBLE__SUPPORT)
-            case COREMESSAGING_VARIABLE_TYPE__DOUBLE:  * (double*)   variable_pointer  =  (double)   value.Double;  break;
+            case COREMESSAGING_VARIABLE_TYPE__DOUBLE:  if (variable_pointer!=NULL)  * (double*)   variable_pointer  =  (double)   value.Double;  return sizeof( double );
            #endif
             default: break;
         }
     }
+    return 0; //keep GCC satisfied
 }
 
 
@@ -96,39 +102,116 @@ static inline bool CoreMessaging_checkValueChange ( CoreMessaging_VariableTypes 
     return false;
 }
 
-
 __attribute__((always_inline))
 static inline void CoreMessaging_sendValue (int variable_index, CoreMessaging_VariableTypes type, CoreMessaging_ValueContainer value, int target_endpoint_index) {
-    static CoreMessaging_VariableDescriptor* TargetEndpoint;  //printf("Sending value %d to variable at index %d at endpoint %d\n", value.Int, variable_index, target_endpoint_index );
-    TargetEndpoint = CoreMessaging_EndPoints[ target_endpoint_index ];
+    static CoreMessaging_VariableDescriptor* TargetVariables;  //printf("Sending value %d to variable at index %d at endpoint %d\n", value.Int, variable_index, target_endpoint_index );
+    TargetVariables = CoreMessaging_EndPoints[ target_endpoint_index ].Variables;
    #if ( ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) && ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )  //for now we don't want segfault with an uninitialized array of a single core
-    CoreMessaging_castValueToVariable( type, value, TargetEndpoint[ variable_index ].Pointer );
-    TargetEndpoint[ variable_index ].PreviousValue = value; //avoid triggering of a false 'change' at the endpoint
+    CoreMessaging_castValueToVariable( type, value, TargetVariables[ variable_index ].VariablePointer );
+    TargetVariables[ variable_index ].PreviousValue = value; //avoid triggering of a false 'change' at the endpoint
    #endif
 }
 
 
+__attribute__((always_inline))
+static inline int CoreMessaging_checkArrayChange ( CoreMessaging_VariableDescriptor* variable_descriptors, int index, size_t array_size ) {
+    static size_t j;
+    for (j=0; j < array_size; ++j) { //detect for change
+        if ( ( (uint8_t*) variable_descriptors[ index ].VariablePointer )[ j ] != ( (uint8_t*) variable_descriptors[ index ].PreviousValue.Pointer )[ j ] ) return j;
+    }
+    return -1;
+}
 
-void CoreMessaging_init (CoreMessaging_VariableDescriptor* value_descriptors, int endpoint_index) {
-    CoreMessaging_EndPoints[ endpoint_index ] = value_descriptors;
-    for (int i=0; value_descriptors[i].Type != COREMESSAGING_VARIABLE_TYPE__END; ++i) {
-        //for (j=0; j < value_descriptors[i].Count; ++j) {
-            CoreMessaging_castValueToVariable( value_descriptors[i].Type, value_descriptors[i].PreviousValue, value_descriptors[i].Pointer ); //value_descriptors[i].PreviousValue = CoreMessaging_castVariableToValue( value_descriptors[i].Type, value_descriptors[i].Pointer ); //The other way round? (Backend initializes the same variables on both sides.)
-        //}
+__attribute__((always_inline))
+static inline void CoreMessaging_sendArray (CoreMessaging_VariableDescriptor* variable_descriptors, int index, size_t start_index, size_t array_size, int target_endpoint_index) {
+    static size_t j;
+    static CoreMessaging_VariableDescriptor* TargetVariables;
+    TargetVariables = CoreMessaging_EndPoints[ target_endpoint_index ].Variables;
+    for (j = start_index /*0*/; j < array_size; ++j) { //update starting from the changed point
+       #if ( ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) && ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )  //for now we don't want segfault with an uninitialized array of a single core
+        ( (uint8_t*) TargetVariables[ index ].VariablePointer )[ j ] =
+       #endif
+        ( (uint8_t*) variable_descriptors[ index ].PreviousValue.Pointer )[ j ] = ( (uint8_t*) variable_descriptors[ index ].VariablePointer )[ j ]; //refresh array (or changed part of array if possible);
     }
 }
 
 
-void CoreMessaging_refresh (CoreMessaging_VariableDescriptor* value_descriptors, int target_endpoint_index) {
+void CoreMessaging_bindEventFunction (int event_id, CoreMessaging_callbackFunction callback_function, int endpoint_index) { //void (*callback_function)() ) {
+    CoreMessaging_EndPoints[ endpoint_index ].Events[ event_id ].callbackFunction = callback_function;
+}
+
+__attribute__((always_inline))
+static inline bool CoreMessaging_checkEventReceipt (int event_index, int endpoint_index) {
+    static CoreMessaging_EventDescriptor *Event;
+    Event = &CoreMessaging_EndPoints[ endpoint_index ].Events[ event_index ];
+    if (Event->Triggered) { Event->Triggered = false; return true; }  else return false;
+}
+
+__attribute__((always_inline))
+inline void CoreMessaging_sendEvent (int event_id, int target_endpoint_index) {
+    static CoreMessaging_EventDescriptor* TargetEvents;
+    TargetEvents = CoreMessaging_EndPoints[ target_endpoint_index ].Events;
+   #if ( ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) && ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )  //for now we don't want segfault with an uninitialized array of a single core
+    TargetEvents[ event_id ].Triggered = true;
+   #endif
+}
+
+void CoreMessaging_callEvent (int event_id, int endpoint_index) { //for now no parameters are requested for the events
+    static CoreMessaging_EventDescriptor Event;
+    Event = CoreMessaging_EndPoints[ endpoint_index ].Events[ event_id ];
+    if (Event.callbackFunction != NULL) ( Event.callbackFunction ) (); //call a local callback directly if registered
+    //CoreMessaging_sendEvent( event_id, target_endpoint_index ); //message to the other core implicitly
+}
+
+void CoreMessaging_broadcastEvent (int event_id) { //send to all cores, and who has a non-NULL function-binding for the event_id, will call that function
+    for (int i=0; i<COREMESSAGING_ENDPOINT_AMOUNT; ++i) CoreMessaging_sendEvent( event_id, i );
+}
+
+
+
+void CoreMessaging_init (CoreMessaging_VariableDescriptor* variable_descriptors, int endpoint_index) {
+    static size_t ElementSize;
+
+    CoreMessaging_EndPoints[ endpoint_index ].Variables = variable_descriptors;
+    for (int i=0; variable_descriptors[i].Type != COREMESSAGING_VARIABLE_TYPE__END; ++i) {
+        if (variable_descriptors[i].Count <= 1) CoreMessaging_castValueToVariable( variable_descriptors[i].Type, variable_descriptors[i].PreviousValue, variable_descriptors[i].VariablePointer ); //variable_descriptors[i].PreviousValue = CoreMessaging_castVariableToValue( variable_descriptors[i].Type, variable_descriptors[i].VariablePointer ); //The other way round? (Backend initializes the same variables on both sides.)
+        else {
+            ElementSize = CoreMessaging_castValueToVariable( variable_descriptors[i].Type, variable_descriptors[i].PreviousValue, NULL );
+            variable_descriptors[i].PreviousValue.Pointer = (void*) malloc( variable_descriptors[i].Count * ElementSize );
+            if (variable_descriptors[i].PreviousValue.Pointer != NULL) memcpy( variable_descriptors[i].PreviousValue.Pointer, variable_descriptors[i].VariablePointer, variable_descriptors[i].Count * ElementSize );
+        }
+    }
+    CoreMessaging_EndPoints[ endpoint_index ].Events = CoreMessaging_Events[ endpoint_index ];
+    for (int i=0; i < COREMESSAGING_EVENT_AMOUNT; ++i) {
+        CoreMessaging_EventDescriptor Event = CoreMessaging_EndPoints[ endpoint_index ].Events[ i ];
+        Event.callbackFunction = NULL; Event.Triggered = false;
+    }
+}
+
+
+void CoreMessaging_refresh (CoreMessaging_VariableDescriptor* variable_descriptors, int endpoint_index, int target_endpoint_index) {
+    static int i, ChangeIndex;
+    static size_t ArraySize;
     static CoreMessaging_ValueContainer CurrentValue;
-    for (int i=0; value_descriptors[i].Type != COREMESSAGING_VARIABLE_TYPE__END; ++i) {
-        //for (j=0; j < value_descriptors[i].Count; ++j) {
-            CurrentValue = CoreMessaging_castVariableToValue( value_descriptors[i].Type, value_descriptors[i].Pointer );
-            if ( CoreMessaging_checkValueChange( value_descriptors[i].Type, CurrentValue, &value_descriptors[i].PreviousValue ) ) {
-                CoreMessaging_sendValue( i, value_descriptors[i].Type, CurrentValue, target_endpoint_index );
+
+    for (i=0; variable_descriptors[i].Type != COREMESSAGING_VARIABLE_TYPE__END; ++i) {
+        if (variable_descriptors[i].Count <= 1) { //check if single value changed
+            CurrentValue = CoreMessaging_castVariableToValue( variable_descriptors[i].Type, variable_descriptors[i].VariablePointer );
+            if ( CoreMessaging_checkValueChange( variable_descriptors[i].Type, CurrentValue, &variable_descriptors[i].PreviousValue ) ) {
+                CoreMessaging_sendValue( i, variable_descriptors[i].Type, CurrentValue, target_endpoint_index );
             }
-        //}
+        }
+        else { //check if any element of an array changed, if yes, send the changed portion (or full array at least)
+            ArraySize = (size_t) variable_descriptors[i].Count * CoreMessaging_castValueToVariable( variable_descriptors[i].Type, variable_descriptors[i].PreviousValue, NULL ); //get array-size in bytes
+            if ( ( ChangeIndex = CoreMessaging_checkArrayChange( variable_descriptors, i, ArraySize ) ) >= 0 ) {
+                CoreMessaging_sendArray( variable_descriptors, i, ChangeIndex, ArraySize, target_endpoint_index );
+            }
+        }
+    }
+    for (i=0; i < COREMESSAGING_EVENT_AMOUNT; ++i) {
+        if ( CoreMessaging_checkEventReceipt( i, endpoint_index ) ) CoreMessaging_callEvent( i, endpoint_index );
     }
 }
+
 
 

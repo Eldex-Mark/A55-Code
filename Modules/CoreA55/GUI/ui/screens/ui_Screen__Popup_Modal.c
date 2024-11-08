@@ -9,6 +9,8 @@ void ui_Screen__Popup_Modal_screen_init(void)
 {
     ui_Screen__Popup_Modal = lv_obj_create(NULL);
     lv_obj_remove_flag(ui_Screen__Popup_Modal, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_set_style_bg_color(ui_Screen__Popup_Modal, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_Screen__Popup_Modal, 128, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Popup__Popup_Modal__Popup = ui_Panel____Popup_create(ui_Screen__Popup_Modal);
     lv_obj_set_x(ui_Popup__Popup_Modal__Popup, 0);
@@ -22,6 +24,7 @@ void ui_Screen__Popup_Modal_screen_init(void)
 
 
 
+    ui_Panel__Popup_Modal__Full = ui_Popup__Popup_Modal__Popup;
     ui_Label__Popup_Modal__Title = ui_comp_get_child(ui_Popup__Popup_Modal__Popup,
                                                      UI_COMP_PANEL____POPUP_PANEL____CARD_LABEL____TITLE);
     ui_Label__Popup_Modal__Text = ui_comp_get_child(ui_Popup__Popup_Modal__Popup,

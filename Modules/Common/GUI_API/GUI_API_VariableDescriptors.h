@@ -243,7 +243,7 @@
 
 
 //Self Test (Advanced Setup 5) screen:
-{ COREMESSAGING_VARIABLE_TYPE__UINT8,  PREFIX TextBuffer,           45*10, { 0 } },        //10 lines of 45 char  Event: Start
+{ COREMESSAGING_VARIABLE_TYPE__UINT8,  PREFIX TextBuffer,           10*45, { 0 } },        //10 lines of 45 char  Event: Start
 { COREMESSAGING_VARIABLE_TYPE__UINT8,  PREFIX SelfTest_ProgressBar,     1, { 0 } },        //0 to 100
 
 

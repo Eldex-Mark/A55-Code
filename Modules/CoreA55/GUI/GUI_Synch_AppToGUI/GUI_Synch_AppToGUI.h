@@ -9,10 +9,11 @@ extern _GUI_Observer _GUI_Observers__Generic_Password [];
 extern _GUI_Observer _GUI_Observers__Home [];
 extern _GUI_Observer _GUI_Observers__Pump_Settings [];
 extern _GUI_Observer _GUI_Observers__Advanced_Settings [];
-extern _GUI_Observer _GUI_Observers__Firmware_Update [];
 extern _GUI_Observer _GUI_Observers__Maintenance [];
-extern _GUI_Observer _GUI_Observers__Self_Test [];
 extern _GUI_Observer _GUI_Observers__Communications [];
+extern _GUI_Observer _GUI_Observers__Self_Test [];
+extern _GUI_Observer _GUI_Observers__Firmware_Update [];
+extern _GUI_Observer _GUI_Observers__Popup_Modal [];
 
 
 

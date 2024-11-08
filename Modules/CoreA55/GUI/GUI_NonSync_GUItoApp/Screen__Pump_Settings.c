@@ -27,7 +27,9 @@ static _GUI_HEADER_valueConverterFunction( _GUI_refreshPumpSettingValueSelector 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getPumpSettingValue ) {
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT;
     switch (_GUI.Pump_Settings__SettingID) { //synchronization-setting is probably only needed once as common for all pumps, isn't it?
-        case PUMPSETTING__SYNCHRONIZATION: return (_GUI_ValueContainer) { .Int = _GUI.SelectedPump__Pump_Settings==0? IOp.PumpSynchronizationModes->Synchronization_1 : (_GUI.SelectedPump__Pump_Settings==1? IOp.PumpSynchronizationModes->Synchronization_2 : IOp.PumpSynchronizationModes->Synchronization_3) };
+        case PUMPSETTING__SYNCHRONIZATION:
+            _GUI_displayPopupScreen( "", "In order to change this option, the pumps must be stopped and the machine needs to be restarted. Do you want to change this, stop the pumps and restart the machine now?", "Cancel", GUI_SCREEN_ID__Pump_Settings, "OK", GUI_SCREEN_ID__Pump_Settings ); //GUI_SCREEN_ID__BACK
+            return (_GUI_ValueContainer) { .Int = _GUI.SelectedPump__Pump_Settings==0? IOp.PumpSynchronizationModes->Synchronization_1 : (_GUI.SelectedPump__Pump_Settings==1? IOp.PumpSynchronizationModes->Synchronization_2 : IOp.PumpSynchronizationModes->Synchronization_3) };
         case PUMPSETTING__DISPENSE_MODE: return (_GUI_ValueContainer) { .Int = _GUI_getPumpMode( _GUI.SelectedPump__Pump_Settings ) };
         case PUMPSETTING__REFILLOUTPUT_RATIO: return (_GUI_ValueContainer) { .Int = _GUI.SelectedPump__Pump_Settings==0? IOp.PumpRefillOutputRatios->Output_Ratio_Pump1 : (_GUI.SelectedPump__Pump_Settings==1? IOp.PumpRefillOutputRatios->Output_Ratio_Pump2 : IOp.PumpRefillOutputRatios->Output_Ratio_Pump3) };
         case PUMPSETTING__ERROR_STOP_DELAY: return (_GUI_ValueContainer) { .Int = _GUI.SelectedPump__Pump_Settings==0? IOp.PumpErrorStopDelays->Err_Delay_1 : (_GUI.SelectedPump__Pump_Settings==1? IOp.PumpErrorStopDelays->Err_Delay_2 : IOp.PumpErrorStopDelays->Err_Delay_3) };

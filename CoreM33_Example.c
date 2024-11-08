@@ -8,6 +8,7 @@
 
 
 #include "GUI_API_Includes.h"  //"Modules/Common/GUI_API/GUI_API_Includes.h"
+#include "GUI_API_Events.h"
 
 #if ( ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) && ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )
  #define CORE_M33__NAMESPACE_ M33.
@@ -31,16 +32,38 @@ static CoreMessaging_VariableDescriptor GUI_API_VariableDescriptors [] = { //sho
     #undef PREFIX
 };
 
+static bool UpdateProgress = false;
+static bool SelfTestProgress = false;
+
 
 
 static void stateMachine ();
+
+
+
+void CoreM33_testEventFunction__Purge () { printf( "CoreM33 Event received from GUI: Pump Control 'Purge' button was pressed.\n" ); }
+void CoreM33_testEventFunction__StartStop () { printf( "CoreM33 Event received from GUI: Pump Control 'Start/Stop' button was pressed.\n" ); }
+void CoreM33_testEventFunction__UpdateFromWeb () {
+    printf( "CoreM33 Event received from GUI: Firmware Update 'Update from Web' button was pressed.\n" );
+    UpdateProgress = true; CORE_M33__NAMESPACE_ FirmwareUpdate_Progress_Bar = 0;
+}
+void CoreM33_testEventFunction__UpdateFromFlashDrive () {
+    printf( "CoreM33 Event received from GUI: Firmware Update 'Update from flash-drive' button was pressed.\n" );
+    UpdateProgress = true; CORE_M33__NAMESPACE_ FirmwareUpdate_Progress_Bar = 0;
+}
+void CoreM33_testEventFunction__RunSelfTest () {
+    printf( "CoreM33 Event received from GUI: Self-test 'Run Self-test' button was pressed.\n" );
+    SelfTestProgress = true; CORE_M33__NAMESPACE_ SelfTest_ProgressBar = 0;
+}
+
 
 
 static void initVariables () {
     CORE_M33__NAMESPACE_ Factory_Initialization_Done = false; //true; //false;
     CORE_M33__NAMESPACE_ Model_Number = 123;
     CORE_M33__NAMESPACE_ NumberOfPumps = 3;
-    //strcpy( (char*) CORE_M33__NAMESPACE_ FactoryPassword, "fct" ); strcpy( (char*) CORE_M33__NAMESPACE_ UserPassword, "usr" ); strcpy( (char*) CORE_M33__NAMESPACE_ RemotePassword, "rmt" ); //to be on M33 it needs array-messaging finalized
+    strcpy( (char*) CORE_M33__NAMESPACE_ FactoryPassword, "fct" ); strcpy( (char*) CORE_M33__NAMESPACE_ UserPassword, "usr" ); strcpy( (char*) CORE_M33__NAMESPACE_ RemotePassword, "rmt" ); //to be on M33 it needs array-messaging finalized
+    strcpy( (char*) CORE_M33__NAMESPACE_ Message_Center, "Dummy Status Message: Ensure a valid string here (terminated by 0)" );
     CORE_M33__NAMESPACE_ PistonSizes.PistonSize_Pump1 = 2; CORE_M33__NAMESPACE_ StrokeLengths.StrokeLength_Pump1 = 0; CORE_M33__NAMESPACE_ WettedParts.WettedPart_Pump1 = 2;
     CORE_M33__NAMESPACE_ PistonSizes.PistonSize_Pump2 = 0; CORE_M33__NAMESPACE_ StrokeLengths.StrokeLength_Pump2 = 1; CORE_M33__NAMESPACE_ WettedParts.WettedPart_Pump2 = 1;
     CORE_M33__NAMESPACE_ PistonSizes.PistonSize_Pump3 = 1; CORE_M33__NAMESPACE_ StrokeLengths.StrokeLength_Pump3 = 2; CORE_M33__NAMESPACE_ WettedParts.WettedPart_Pump3 = 0;
@@ -55,12 +78,13 @@ static void initVariables () {
     CORE_M33__NAMESPACE_ Device_ID = 20; CORE_M33__NAMESPACE_ Baud_Rate = 2; CORE_M33__NAMESPACE_ SerialSettings.Data_Bit = 3;  CORE_M33__NAMESPACE_ SerialSettings.Stop_Bit = 2;  CORE_M33__NAMESPACE_ SerialSettings.Parity_Bit = 1;
     CORE_M33__NAMESPACE_ EthernetSettings.DHCP = 1; CORE_M33__NAMESPACE_ RemoteControls.Ethernet_RemoteControl = 1;
     CORE_M33__NAMESPACE_ WiFiConnectionDetails.Security_Type = 2; CORE_M33__NAMESPACE_ WiFiSettings.Automatic_connection = 1; CORE_M33__NAMESPACE_ RemoteControls.Wifi_RemoteControl = 1;
+    CORE_M33__NAMESPACE_ Network_Details[1].Security_Type = 1; CORE_M33__NAMESPACE_ Network_Details[2].Security_Type = 2; CORE_M33__NAMESPACE_ Network_Details[3].Security_Type = 3;
     CORE_M33__NAMESPACE_ Washport_Auto = 1;
     CORE_M33__NAMESPACE_ AdvancedSetup_bits.Pressure_unit_of_measure = 1; CORE_M33__NAMESPACE_ AdvancedSetup_bits.Pressure_limit_enabled = 1;
     CORE_M33__NAMESPACE_ StopRestart_bits.Stop_on_Stall = 1; CORE_M33__NAMESPACE_ StopRestart_bits.Restart_on_Power_Up = 1;
     CORE_M33__NAMESPACE_ Pressure_Alarm_Min = 245; CORE_M33__NAMESPACE_ Pressure_Alarm_Max = 6425;
     CORE_M33__NAMESPACE_ Pump1_Check_Valve_Alarm = 2345; CORE_M33__NAMESPACE_ Pump2_Check_Valve_Alarm = 393; CORE_M33__NAMESPACE_ Pump3_Check_Valve_Alarm = 1536;
-    CORE_M33__NAMESPACE_ Pump1_Total_Seal_Alarm = 5557; CORE_M33__NAMESPACE_ Pump2_Total_Seal_Alarm = 34526; CORE_M33__NAMESPACE_ Pump3_Total_Seal_Alarm = 16;
+    CORE_M33__NAMESPACE_ Pump1_Total_Seal_Alarm = 5557; CORE_M33__NAMESPACE_ Pump2_Total_Seal_Alarm = 34526; CORE_M33__NAMESPACE_ Pump3_Total_Seal_Alarm = 800; //16;
     CORE_M33__NAMESPACE_ Pump_1_Total_Run = 3569;
     CORE_M33__NAMESPACE_ Pressure_Target = 2193; CORE_M33__NAMESPACE_ Flow_Rate1 = 45.69; CORE_M33__NAMESPACE_ Flow_Rate2 = 90.2; CORE_M33__NAMESPACE_ Flow_Rate3 = 5.4;
     CORE_M33__NAMESPACE_ Flow_total_1 = 45.4; CORE_M33__NAMESPACE_ Flow_total_3 = 180.25; CORE_M33__NAMESPACE_ Run_time_2 = 88; CORE_M33__NAMESPACE_ Run_time_3 = 452;
@@ -68,6 +92,38 @@ static void initVariables () {
     CORE_M33__NAMESPACE_ Dispense_Amount_2 = 7.6;    CORE_M33__NAMESPACE_ Dispense_Duration_2 = 84;    CORE_M33__NAMESPACE_ Delay_2 = 945;  CORE_M33__NAMESPACE_ Occurrences_2 = 56499;
     CORE_M33__NAMESPACE_ Dispense_Amount_3 = 43.2;   CORE_M33__NAMESPACE_ Dispense_Duration_3 = 1492;  CORE_M33__NAMESPACE_ Delay_3 = 7554; CORE_M33__NAMESPACE_ Occurrences_3 = 8;
     CORE_M33__NAMESPACE_ Pump2_Seal_RunTime = 256; CORE_M33__NAMESPACE_ Pump2_CheckValve_RunTime = 3526;
+    CORE_M33__NAMESPACE_ Address[0]=123; CORE_M33__NAMESPACE_ Address[1]=234; CORE_M33__NAMESPACE_ Address[2]=56; CORE_M33__NAMESPACE_ Address[3]=7;
+    CORE_M33__NAMESPACE_ Mask[0]=255; CORE_M33__NAMESPACE_ Mask[1]=255; CORE_M33__NAMESPACE_ Mask[2]=255; CORE_M33__NAMESPACE_ Mask[3]=0;
+    CORE_M33__NAMESPACE_ GateWay[0]=210; CORE_M33__NAMESPACE_ GateWay[1]=109; CORE_M33__NAMESPACE_ GateWay[2]=98; CORE_M33__NAMESPACE_ GateWay[3]=77;
+    strcpy( (char*) CORE_M33__NAMESPACE_ SSID, "Example-SSID.." ); strcpy( (char*) CORE_M33__NAMESPACE_ Password, "wfi" );
+    strcpy( (char*) CORE_M33__NAMESPACE_ Networks[0], "Network 1" ); strcpy( (char*) CORE_M33__NAMESPACE_ Networks[1], "Network 2" ); strcpy( (char*) CORE_M33__NAMESPACE_ Networks[2], "Example Network" );
+    strcpy( (char*) CORE_M33__NAMESPACE_ Networks[3], "Exawple Network 2" ); strcpy( (char*) CORE_M33__NAMESPACE_ Networks[4], "Whatever" ); strcpy( (char*) CORE_M33__NAMESPACE_ Networks[5], "Good Strength WiFi" );
+
+    strcpy( (char*) CORE_M33__NAMESPACE_ TextBuffer[0], "This is an example for log-message.");
+    strcpy( (char*) CORE_M33__NAMESPACE_ TextBuffer[1], "");
+    strcpy( (char*) CORE_M33__NAMESPACE_ TextBuffer[2], "3rd line of the log");
+    strcpy( (char*) CORE_M33__NAMESPACE_ TextBuffer[3], " ");
+    strcpy( (char*) CORE_M33__NAMESPACE_ TextBuffer[4], "The board will update this array after test.");
+    strcpy( (char*) CORE_M33__NAMESPACE_ TextBuffer[5], "And the GUI will follow in every 1 second.");
+    strcpy( (char*) CORE_M33__NAMESPACE_ TextBuffer[6], "--------------------------------------------"); //this line is exactly 45 characters
+    strcpy( (char*) CORE_M33__NAMESPACE_ TextBuffer[7], "This dashe-line above has exactly 44 chars.");
+    strcpy( (char*) CORE_M33__NAMESPACE_ TextBuffer[8], "This is example of a changing text:");
+    strcpy( (char*) CORE_M33__NAMESPACE_ TextBuffer[9], "");
+    CORE_M33__NAMESPACE_ FirmwareUpdate_Progress_Bar = 0;
+}
+
+
+static inline void CoreM33_bindEventFunction ( int event_id, void (*callback_function)() ) {
+    CoreMessaging_bindEventFunction( event_id, callback_function, COREMESSAGING_ENDPOINT__CORE_M33 );
+}
+
+void initEvents () {
+    CoreMessaging_bindEventFunction( GUI_TO_BACKEND_EVENT__Purge_button, CoreM33_testEventFunction__Purge, COREMESSAGING_ENDPOINT__CORE_M33 );
+    CoreM33_bindEventFunction( GUI_TO_BACKEND_EVENT__StartStop_button, CoreM33_testEventFunction__StartStop );
+    CoreM33_bindEventFunction( GUI_TO_BACKEND_EVENT__Update_on_the_web_Button, CoreM33_testEventFunction__UpdateFromWeb );
+    CoreM33_bindEventFunction( GUI_TO_BACKEND_EVENT__Update_from_flash_drive_button, CoreM33_testEventFunction__UpdateFromFlashDrive );
+    CoreM33_bindEventFunction( GUI_TO_BACKEND_EVENT__Run_Self_Test_button, CoreM33_testEventFunction__RunSelfTest );
+    //... not all bingings are necessarily created in this example but can be added in the final product by using this binding function in the core where it should be run
 }
 
 
@@ -76,13 +132,13 @@ void CoreM33_init () {
     CoreMessaging_init( GUI_API_VariableDescriptors, COREMESSAGING_ENDPOINT__CORE_M33 );  //CoreM33_CoreMessaging_init();
 
     initVariables();
-
+    initEvents();
 }
 
 
 void CoreM33_refresh () {
 
-    CoreMessaging_refresh( GUI_API_VariableDescriptors, COREMESSAGING_ENDPOINT__CORE_A55 );  //CoreM33_CoreMessaging_refresh();
+    CoreMessaging_refresh( GUI_API_VariableDescriptors, COREMESSAGING_ENDPOINT__CORE_M33, COREMESSAGING_ENDPOINT__CORE_A55 );  //CoreM33_CoreMessaging_refresh();
     //printf( "CoreM33_CoreMessaging: GUI_Version: %d, Firmware_Version: %d\n", CORE_M33__NAMESPACE_ GUI_Version, CORE_M33__NAMESPACE_ Firmware_Version );
 
     stateMachine();
@@ -125,7 +181,7 @@ static void stateMachine () { //TestBench state machine
     if ( (CORE_M33__NAMESPACE_ DateTime.Day += 1) >= 31 )  CORE_M33__NAMESPACE_ DateTime.Day = 0;
     if ( (CORE_M33__NAMESPACE_ DateTime.Hour += 1) >= 59 )  CORE_M33__NAMESPACE_ DateTime.Hour = 0;
     if ( (CORE_M33__NAMESPACE_ DateTime.Minute += 1) >= 59 )  CORE_M33__NAMESPACE_ DateTime.Minute = 1;
-    //if ( (CORE_M33__NAMESPACE_ FirmwareUpdate_Progress_Bar += 1) >= 1000 )  CORE_M33__NAMESPACE_ FirmwareUpdate_Progress_Bar = 0;
+    if ( UpdateProgress && (CORE_M33__NAMESPACE_ FirmwareUpdate_Progress_Bar += 1) >= 100 ) { CORE_M33__NAMESPACE_ FirmwareUpdate_Progress_Bar = 0; UpdateProgress = false; }
     if ( (CORE_M33__NAMESPACE_ Pump1_CheckValve_RunTime += 1) >= 9999 )  CORE_M33__NAMESPACE_ Pump1_CheckValve_RunTime = 0; //if ( (CORE_M33__NAMESPACE_ Pump1_Check_Valve_Hours += 1) >= 9999 )  CORE_M33__NAMESPACE_ Pump1_Check_Valve_Hours = 0;
     //if ( (CORE_M33__NAMESPACE_ Pump2_CheckValve_RunTime += 100) >= 3999 )  CORE_M33__NAMESPACE_ Pump2_CheckValve_RunTime = 0; //if ( (CORE_M33__NAMESPACE_ Pump2_Check_Valve_Hours += 1) >= 9999 )  CORE_M33__NAMESPACE_ Pump2_Check_Valve_Hours = 0;
     if ( (CORE_M33__NAMESPACE_ Pump3_CheckValve_RunTime += 5) >= 599 )  CORE_M33__NAMESPACE_ Pump3_CheckValve_RunTime = 0;
@@ -143,10 +199,12 @@ static void stateMachine () { //TestBench state machine
     //if ( (CORE_M33__NAMESPACE_ Pump3_Total_Seal_Alarm += 1) >= 9999 )  CORE_M33__NAMESPACE_ Pump3_Total_Seal_Alarm = 0;
     //if ( (CORE_M33__NAMESPACE_ Data_Frequency += 1) >= 999 )  CORE_M33__NAMESPACE_ Data_Frequency = 0;
     //if ( (CORE_M33__NAMESPACE_ RS_485_ID += 1) >= 255 )  CORE_M33__NAMESPACE_ RS_485_ID = 0;
-    //if ( (CORE_M33__NAMESPACE_ SelfTest_ProgressBar += 1) >= 100 )  CORE_M33__NAMESPACE_ SelfTest_ProgressBar = 0;
+    if ( SelfTestProgress && (CORE_M33__NAMESPACE_ SelfTest_ProgressBar += 1) >= 100 ) { CORE_M33__NAMESPACE_ SelfTest_ProgressBar = 0; SelfTestProgress = false; printf("Self-test finished\n"); }
     //if ( (CORE_M33__NAMESPACE_ Compressibility_1 += 1) >= 100 )  CORE_M33__NAMESPACE_ Compressibility_1 = 10;
     //if ( (CORE_M33__NAMESPACE_ Compressibility_2 += 1) >= 100 )  CORE_M33__NAMESPACE_ Compressibility_2 = 20;
     //if ( (CORE_M33__NAMESPACE_ Compressibility_3 += 1) >= 100 )  CORE_M33__NAMESPACE_ Compressibility_3 = 30;
+    sprintf( (char*) CORE_M33__NAMESPACE_ TextBuffer[9], "Pump1 Total Runtime: %d", (int) CORE_M33__NAMESPACE_ Pump_1_Total_Run );
+
 }
 
 

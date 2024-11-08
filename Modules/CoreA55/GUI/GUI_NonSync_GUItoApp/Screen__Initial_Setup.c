@@ -38,6 +38,7 @@ void _GUI_clicked__Button__Initial_Setup__Next (lv_event_t* event) {
     *IOp.Factory_Initialization_Done = true; //should send an 'event' to the backend according to API  (setting should be saved in backend permanently)
     _GUI_loadScreenByID( GUI_SCREEN_ID__Home );
     _GUI.PasswordScreen_RememberedPasswordType = -1; //this ensures forgetting factory password when leaving the initial setup screen
+    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Initial_Setup__Next );
 }
 
 
@@ -70,6 +71,12 @@ void _GUI_clicked__Button__Initial_Setup__SelectOptions (lv_event_t* event) {
     _GUI.PasswordScreen_TargetScreenID = GUI_SCREEN_ID__Select_Option;
     _GUI.PasswordScreen_TargetWidget = NULL;
     _GUI_loadScreenByID( GUI_SCREEN_ID__Generic_Password );
+}
+
+void _GUI_clicked__Button__Initial_Setup__FactoryTest (lv_event_t* event) {
+    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Initial_Setup__FactoryTest );
+    _GUI_displayPopupScreen( "", "Do you want to perform a Factory burn-in test?", "No", GUI_SCREEN_ID__BACK, "Yes", GUI_SCREEN_ID__Initial_Setup ); //GUI_SCREEN_ID__BACK );
+    //_GUI_displayPopupScreen( "", "The factory test has been completed", "", -1, "OK", GUI_SCREEN_ID__Initial_Setup ); //GUI_SCREEN_ID__BACK );
 }
 
 
