@@ -39,8 +39,9 @@ void _GUI_clicked__Button__Advanced_Settings__FactoryMenu (lv_event_t* event) {
 }
 
 void _GUI_clicked__Button__Advanced_Settings__FactoryReset (lv_event_t* event) {
-    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Advanced_Settings__FactoryReset );
-    _GUI_displayPopupScreen( "", "Are you sure you really want to reset the pump and advanced settings to factory default? (This operation doesn't affect the factory settings on this screen)", "Cancel", GUI_SCREEN_ID__Advanced_Settings, "Confirm", GUI_SCREEN_ID__Advanced_Settings ); //GUI_SCREEN_ID__BACK
-    //_GUI_displayPopupScreen( "", "The factory settings have been restored successfully", "", -1, "OK", GUI_SCREEN_ID__Advanced_Settings ); //GUI_SCREEN_ID__BACK
+    //_GUI_triggerBackendEvent( _GUI_TO_BACKEND_EVENT__Advanced_Settings__FactoryReset );
+    _GUI_displayPopupScreen( "", "Are you sure you really want to reset the pump and advanced settings to factory default? (This operation doesn't affect the factory settings on this screen)"
+     , "Cancel", GUI_SCREEN_ID__Advanced_Settings, "Confirm", GUI_SCREEN_ID__Advanced_Settings, _GUI_TO_BACKEND_EVENT__Advanced_Settings__FactoryReset ); //GUI_SCREEN_ID__BACK
+    //_GUI_displayPopupScreen( "", "The factory settings have been restored successfully", "", -1, "OK", GUI_SCREEN_ID__Advanced_Settings, -1 ); //GUI_SCREEN_ID__BACK
 }
 

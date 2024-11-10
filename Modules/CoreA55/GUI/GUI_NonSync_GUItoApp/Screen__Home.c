@@ -13,13 +13,13 @@
 //bind GUI-input widgets to variables (event-based callback and refresh):
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getDispenseAmount ) {
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__FLOAT/*STRING*/; return (_GUI_ValueContainer) {
-        ./*Pointer*/Float = /*_GUI_convertFloatToText*/( _GUI.SelectedPump__Home==0? *IOp.DispenseAmount_Pump1 : ( _GUI.SelectedPump__Home==1? *IOp.DispenseAmount_Pump2 : *IOp.DispenseAmount_Pump3 ) )
+        ./*Pointer*/Float = /*_GUI_convertFloatToText*/( *IOp/*_GUI*/.SelectedPump__Home==0? *IOp.DispenseAmount_Pump1 : ( *IOp/*_GUI*/.SelectedPump__Home==1? *IOp.DispenseAmount_Pump2 : *IOp.DispenseAmount_Pump3 ) )
     };
 }
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setDispenseAmount ) {
     Float Value = /*input_value.Float*/ _GUI_convertTextToFloat( input_value.Pointer );
-    switch (_GUI.SelectedPump__Home) {
+    switch (*IOp/*_GUI*/.SelectedPump__Home) {
         case 0: *IOp.DispenseAmount_Pump1 = Value; break;  case 1: *IOp.DispenseAmount_Pump2 = Value; break;  case 2: *IOp.DispenseAmount_Pump3 = Value; break;
     }
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__CUSTOMWRITE; return input_value;
@@ -28,13 +28,13 @@ static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setDispenseAmount
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getDispenseDuration ) {
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT/*STRING*/; return (_GUI_ValueContainer) {
-        ./*Pointer*/Int = /*_GUI_convertIntToText*/( _GUI.SelectedPump__Home==0? *IOp.DispenseDuration_Pump1 : ( _GUI.SelectedPump__Home==1? *IOp.DispenseDuration_Pump2 : *IOp.DispenseDuration_Pump3 ) )
+        ./*Pointer*/Int = /*_GUI_convertIntToText*/( *IOp/*_GUI*/.SelectedPump__Home==0? *IOp.DispenseDuration_Pump1 : ( *IOp/*_GUI*/.SelectedPump__Home==1? *IOp.DispenseDuration_Pump2 : *IOp.DispenseDuration_Pump3 ) )
     };
 }
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setDispenseDuration ) {
     Int Value = /*input_value.Int*/ _GUI_convertTextToInt( input_value.Pointer );
-    switch (_GUI.SelectedPump__Home) {
+    switch (*IOp/*_GUI*/.SelectedPump__Home) {
         case 0: *IOp.DispenseDuration_Pump1 = Value; break;  case 1: *IOp.DispenseDuration_Pump2 = Value; break;  case 2: *IOp.DispenseDuration_Pump3 = Value; break;
     }
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__CUSTOMWRITE; return input_value;
@@ -43,13 +43,13 @@ static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setDispenseDurati
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getDispenseRepeatDelay ) {
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT/*STRING*/; return (_GUI_ValueContainer) {
-        ./*Pointer*/Int = /*_GUI_convertIntToText*/( _GUI.SelectedPump__Home==0? *IOp.RepeatDelay_Pump1 : ( _GUI.SelectedPump__Home==1? *IOp.RepeatDelay_Pump2 : *IOp.RepeatDelay_Pump3 ) )
+        ./*Pointer*/Int = /*_GUI_convertIntToText*/( *IOp/*_GUI*/.SelectedPump__Home==0? *IOp.RepeatDelay_Pump1 : ( *IOp/*_GUI*/.SelectedPump__Home==1? *IOp.RepeatDelay_Pump2 : *IOp.RepeatDelay_Pump3 ) )
     };
 }
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setDispenseRepeatDelay ) {
     Int Value = /*input_value.Int*/ _GUI_convertTextToInt( input_value.Pointer );
-    switch (_GUI.SelectedPump__Home) {
+    switch (*IOp/*_GUI*/.SelectedPump__Home) {
         case 0: *IOp.RepeatDelay_Pump1 = Value; break;  case 1: *IOp.RepeatDelay_Pump2 = Value; break;  case 2: *IOp.RepeatDelay_Pump3 = Value; break;
     }
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__CUSTOMWRITE; return input_value;
@@ -58,13 +58,13 @@ static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setDispenseRepeat
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getDispenseRepeatAmount ) {
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT/*STRING*/; return (_GUI_ValueContainer) {
-        ./*Pointer*/Int = /*_GUI_convertIntToText*/( _GUI.SelectedPump__Home==0? *IOp.RepeatAmount_Pump1 : ( _GUI.SelectedPump__Home==1? *IOp.RepeatAmount_Pump2 : *IOp.RepeatAmount_Pump3 ) )
+        ./*Pointer*/Int = /*_GUI_convertIntToText*/( *IOp/*_GUI*/.SelectedPump__Home==0? *IOp.RepeatAmount_Pump1 : ( *IOp/*_GUI*/.SelectedPump__Home==1? *IOp.RepeatAmount_Pump2 : *IOp.RepeatAmount_Pump3 ) )
     };
 }
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setDispenseRepeatAmount ) {
     Int Value = /*input_value.Int*/ _GUI_convertTextToInt( input_value.Pointer );
-    switch (_GUI.SelectedPump__Home) {
+    switch (*IOp/*_GUI*/.SelectedPump__Home) {
         case 0: *IOp.RepeatAmount_Pump1 = Value; break;  case 1: *IOp.RepeatAmount_Pump2 = Value; break;  case 2: *IOp.RepeatAmount_Pump3 = Value; break;
     }
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__CUSTOMWRITE; return input_value;
@@ -83,29 +83,29 @@ _GUI_Modifier _GUI_Modifiers__Home [] = {
 
 
 void _GUI_clicked__Button__Home__Pump1 (lv_event_t* event) {
-    _GUI.SelectedPump__Home = 0;
+    *IOp/*_GUI*/.SelectedPump__Home = 0;
     _GUI_display_PumpSelection__Home();
 }
 
 void _GUI_clicked__Button__Home__Pump2 (lv_event_t* event) {
-    _GUI.SelectedPump__Home = 1;
+    *IOp/*_GUI*/.SelectedPump__Home = 1;
     _GUI_display_PumpSelection__Home();
 }
 
 void _GUI_clicked__Button__Home__Pump3 (lv_event_t* event) {
-    _GUI.SelectedPump__Home = 2;
+    *IOp/*_GUI*/.SelectedPump__Home = 2;
     _GUI_display_PumpSelection__Home();
 }
 
 void _GUI_clicked__Button__Home__StartStop (lv_event_t* event) {
     *IOp.RunTime_Pump1 = *IOp.RunTime_Pump2 = *IOp.RunTime_Pump3 = 0;
     *IOp.FlowAmount_Pump1 = *IOp.FlowAmount_Pump2 = *IOp.FlowAmount_Pump3 = 0; //or/and send event?
-    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Home__StartStop );
+    _GUI_triggerBackendEvent( _GUI_TO_BACKEND_EVENT__Home__StartStop );
 }
 
 void _GUI_clicked__Button__Home__Purge (lv_event_t* event) {
-    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Home__Purge );
-    _GUI_displayPopupScreen( "", "Do you want to start the purge process?", "Cancel", GUI_SCREEN_ID__Home, "Confirm", GUI_SCREEN_ID__Home ); //GUI_SCREEN_ID__BACK
+    //_GUI_triggerBackendEvent( _GUI_TO_BACKEND_EVENT__Home__Purge );
+    _GUI_displayPopupScreen( "", "Do you want to start the purge process?", "Cancel", GUI_SCREEN_ID__Home, "Confirm", GUI_SCREEN_ID__Home, _GUI_TO_BACKEND_EVENT__Home__Purge ); //GUI_SCREEN_ID__BACK
 }
 
 
@@ -116,20 +116,20 @@ void _GUI_pressing__Button__Home__FlowOrPressure_Up (lv_event_t* event) {
     if ( !RepeatSpeed ) return;
     else if (RepeatSpeed > GUI_KEYREPEAT_RATE_MIN) { Acceleration = 1; AccelerationPrescaleCounter = 0; }
     else { if (++AccelerationPrescaleCounter >= KEYREPEAT_ACCELERATION_PRESCALE) { AccelerationPrescaleCounter = 0; ++Acceleration; } }
-    switch ( _GUI_getPumpMode( _GUI.SelectedPump__Home ) ) {
+    switch ( _GUI_getPumpMode( *IOp/*_GUI*/.SelectedPump__Home ) ) {
         case _GUI_PUMPSETTING__DISPENSE_MODE__PRESSURE:
             if (*IOp.Pressure_Target < _GUI_PRESSURE_TARGET_VALUE_MAX) *IOp.Pressure_Target += _GUI_PRESSURE_TARGET_STEPSIZE * Acceleration;
             if (*IOp.Pressure_Target > _GUI_PRESSURE_TARGET_VALUE_MAX) *IOp.Pressure_Target = _GUI_PRESSURE_TARGET_VALUE_MAX;
         break;
         case _GUI_PUMPSETTING__DISPENSE_MODE__FLOW:
-            switch (_GUI.SelectedPump__Home) {
+            switch (*IOp/*_GUI*/.SelectedPump__Home) {
                 case 0: if (*IOp.FlowRate_Pump1 < _GUI_FLOWRATE_VALUE_MAX) *IOp.FlowRate_Pump1 += _GUI_FLOWRATE_STEPSIZE * Acceleration; if (*IOp.FlowRate_Pump1 >= _GUI_FLOWRATE_VALUE_MAX) *IOp.FlowRate_Pump1 = _GUI_FLOWRATE_VALUE_MAX; break;
                 case 1: if (*IOp.FlowRate_Pump2 < _GUI_FLOWRATE_VALUE_MAX) *IOp.FlowRate_Pump2 += _GUI_FLOWRATE_STEPSIZE * Acceleration; if (*IOp.FlowRate_Pump2 >= _GUI_FLOWRATE_VALUE_MAX) *IOp.FlowRate_Pump2 = _GUI_FLOWRATE_VALUE_MAX; break;
                 case 2: if (*IOp.FlowRate_Pump3 < _GUI_FLOWRATE_VALUE_MAX) *IOp.FlowRate_Pump3 += _GUI_FLOWRATE_STEPSIZE * Acceleration; if (*IOp.FlowRate_Pump3 >= _GUI_FLOWRATE_VALUE_MAX) *IOp.FlowRate_Pump3 = _GUI_FLOWRATE_VALUE_MAX; break;
             }
         break;
     }
-    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Home__FlowOrPressure_Up );
+    _GUI_triggerBackendEvent( _GUI_TO_BACKEND_EVENT__Home__FlowOrPressure_Up );
 }
 
 void _GUI_pressing__Button__Home__FlowOrPressure_Down (lv_event_t* event) {
@@ -139,7 +139,7 @@ void _GUI_pressing__Button__Home__FlowOrPressure_Down (lv_event_t* event) {
     if ( !RepeatSpeed ) return;
     else if (RepeatSpeed > GUI_KEYREPEAT_RATE_MIN) { Acceleration = 1; AccelerationPrescaleCounter = 0; }
     else { if (++AccelerationPrescaleCounter >= KEYREPEAT_ACCELERATION_PRESCALE) { AccelerationPrescaleCounter = 0; ++Acceleration; } }
-    switch ( _GUI_getPumpMode( _GUI.SelectedPump__Home ) ) {
+    switch ( _GUI_getPumpMode( *IOp/*_GUI*/.SelectedPump__Home ) ) {
         case _GUI_PUMPSETTING__DISPENSE_MODE__PRESSURE:
             if (*IOp.Pressure_Target > 0) {
                 Result = *IOp.Pressure_Target - _GUI_PRESSURE_TARGET_STEPSIZE * Acceleration;
@@ -147,23 +147,23 @@ void _GUI_pressing__Button__Home__FlowOrPressure_Down (lv_event_t* event) {
             }
         break;
         case _GUI_PUMPSETTING__DISPENSE_MODE__FLOW:
-            switch (_GUI.SelectedPump__Home) {
+            switch (*IOp/*_GUI*/.SelectedPump__Home) {
                 case 0: if (*IOp.FlowRate_Pump1 > _GUI_FLOWRATE_VALUE_MIN) *IOp.FlowRate_Pump1 -= _GUI_FLOWRATE_STEPSIZE * Acceleration; if (*IOp.FlowRate_Pump1 <= _GUI_FLOWRATE_VALUE_MIN) *IOp.FlowRate_Pump1 = _GUI_FLOWRATE_VALUE_MIN; break;
                 case 1: if (*IOp.FlowRate_Pump2 > _GUI_FLOWRATE_VALUE_MIN) *IOp.FlowRate_Pump2 -= _GUI_FLOWRATE_STEPSIZE * Acceleration; if (*IOp.FlowRate_Pump2 <= _GUI_FLOWRATE_VALUE_MIN) *IOp.FlowRate_Pump2 = _GUI_FLOWRATE_VALUE_MIN; break;
                 case 2: if (*IOp.FlowRate_Pump3 > _GUI_FLOWRATE_VALUE_MIN) *IOp.FlowRate_Pump3 -= _GUI_FLOWRATE_STEPSIZE * Acceleration; if (*IOp.FlowRate_Pump3 <= _GUI_FLOWRATE_VALUE_MIN) *IOp.FlowRate_Pump3 = _GUI_FLOWRATE_VALUE_MIN; break;
             }
         break;
     }
-    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Home__FlowOrPressure_Down );
+    _GUI_triggerBackendEvent( _GUI_TO_BACKEND_EVENT__Home__FlowOrPressure_Down );
 }
 
 
 
 void _GUI_display_PumpSelection__Home () {
-    _GUI_setWidgetCheckedState( ui_Button__Home__Pump1, _GUI.SelectedPump__Home == 0 );
-    _GUI_setWidgetCheckedState( ui_Button__Home__Pump2, _GUI.SelectedPump__Home == 1 );
-    _GUI_setWidgetCheckedState( ui_Button__Home__Pump3, _GUI.SelectedPump__Home == 2 );
-    int DispenseMode = _GUI_getPumpMode( _GUI.SelectedPump__Home ); //_GUI.SelectedPump__Home==0 ? IOp.PumpDispenseModes->Dispense_Mode_Pump1 : (_GUI.SelectedPump__Home==1? IOp.PumpDispenseModes->Dispense_Mode_Pump2:IOp.PumpDispenseModes->Dispense_Mode_Pump3);
+    _GUI_setWidgetCheckedState( ui_Button__Home__Pump1, *IOp/*_GUI*/.SelectedPump__Home == 0 );
+    _GUI_setWidgetCheckedState( ui_Button__Home__Pump2, *IOp/*_GUI*/.SelectedPump__Home == 1 ); _GUI_conditionalShowWidget( ui_Button__Home__Pump2, *IOp.NumberOfPumps >= 2 );
+    _GUI_setWidgetCheckedState( ui_Button__Home__Pump3, *IOp/*_GUI*/.SelectedPump__Home == 2 ); _GUI_conditionalShowWidget( ui_Button__Home__Pump3, *IOp.NumberOfPumps >= 3 );
+    int DispenseMode = _GUI_getPumpMode( *IOp/*_GUI*/.SelectedPump__Home ); //*IOp/*_GUI*/.SelectedPump__Home==0 ? IOp.PumpDispenseModes->Dispense_Mode_Pump1 : (*IOp/*_GUI*/.SelectedPump__Home==1? IOp.PumpDispenseModes->Dispense_Mode_Pump2:IOp.PumpDispenseModes->Dispense_Mode_Pump3);
     _GUI_conditionalShowWidget( ui_Container__Home__DispenseGroup, DispenseMode==_GUI_PUMPSETTING__DISPENSE_MODE__DISPENSE );
     _GUI_conditionalShowWidget( ui_Container__Home__ButtonGroup, DispenseMode==_GUI_PUMPSETTING__DISPENSE_MODE__FLOW || DispenseMode==_GUI_PUMPSETTING__DISPENSE_MODE__PRESSURE );
     _GUI_setWidgetText( ui_Label__Home__MainValue_Title, DispenseMode==_GUI_PUMPSETTING__DISPENSE_MODE__PRESSURE? "Pressure Target":"Flow Rate" );

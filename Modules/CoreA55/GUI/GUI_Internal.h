@@ -47,11 +47,13 @@ void _GUI_refresh_Main ();
 void _GUI_loadScreenByID (GUI_ScreenIDs screen_id);
 void _GUI_loadScreenByIDwithFade (GUI_ScreenIDs screen_id, int fade_duration);
 void _GUI_setClickScreenChangeByID (lv_obj_t* widget, GUI_ScreenIDs screen_id);
-void _GUI_displayPopupScreen (char* title, char* text, char* leftbutton_text, int leftbutton_screen_id, char* rightbutton_text, int rightbutton_screen_id);
+void _GUI_setClickBackendEventSend ( lv_obj_t* widget, int event_id);
+
+void _GUI_displayPopupScreen (char* title, char* text, char* leftbutton_text, int leftbutton_screen_id, char* rightbutton_text, int rightbutton_screen_id, int rightbutton_event_id);
 void _GUI_closePopupScreen ();
 void _GUI_displayStatusMessage (char* message);
 
-void _GUI_triggerEvent (int event_id);
+void _GUI_triggerBackendEvent (int event_id);
 
 int _GUI_getPumpMode (int selected_pump);
 float _GUI_getFlowRate (int selected_pump);

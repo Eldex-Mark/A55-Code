@@ -8,10 +8,10 @@ static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getAlarmLifetime 
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT/*STRING*/;
     switch (_GUI.Maintenance__PumpPart) {
         case 0: return (_GUI_ValueContainer) {
-            ./*Pointer*/Int = /*_GUI_convertIntToText*/( _GUI.SelectedPump__Maintenance==0? *IOp.AlarmLifetime__Pump1_PistonSeal : ( _GUI.SelectedPump__Maintenance==1? *IOp.AlarmLifetime__Pump2_PistonSeal : *IOp.AlarmLifetime__Pump3_PistonSeal ) )
+            ./*Pointer*/Int = /*_GUI_convertIntToText*/( *IOp/*_GUI*/.SelectedPump__Maintenance==0? *IOp.AlarmLifetime__Pump1_PistonSeal : ( *IOp/*_GUI*/.SelectedPump__Maintenance==1? *IOp.AlarmLifetime__Pump2_PistonSeal : *IOp.AlarmLifetime__Pump3_PistonSeal ) )
         };
         case 1: return (_GUI_ValueContainer) {
-            ./*Pointer*/Int = /*_GUI_convertIntToText*/( _GUI.SelectedPump__Maintenance==0? *IOp.AlarmLifetime__Pump1_CheckValve : ( _GUI.SelectedPump__Maintenance==1? *IOp.AlarmLifetime__Pump2_CheckValve : *IOp.AlarmLifetime__Pump3_CheckValve ) )
+            ./*Pointer*/Int = /*_GUI_convertIntToText*/( *IOp/*_GUI*/.SelectedPump__Maintenance==0? *IOp.AlarmLifetime__Pump1_CheckValve : ( *IOp/*_GUI*/.SelectedPump__Maintenance==1? *IOp.AlarmLifetime__Pump2_CheckValve : *IOp.AlarmLifetime__Pump3_CheckValve ) )
         };
     } return input_value; //make smarty compiler happy
 }
@@ -19,10 +19,10 @@ static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getAlarmLifetime 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setAlarmLifetime ) {
     Int Value = /*input_value.Int*/ _GUI_convertTextToInt( input_value.Pointer );
     switch (_GUI.Maintenance__PumpPart) {
-        case 0: switch (_GUI.SelectedPump__Maintenance)
+        case 0: switch (*IOp/*_GUI*/.SelectedPump__Maintenance)
                 { case 0: *IOp.AlarmLifetime__Pump1_PistonSeal = Value; break;  case 1: *IOp.AlarmLifetime__Pump2_PistonSeal = Value; break;  case 2: *IOp.AlarmLifetime__Pump3_PistonSeal = Value; break; }
         break;
-        case 1: switch (_GUI.SelectedPump__Maintenance)
+        case 1: switch (*IOp/*_GUI*/.SelectedPump__Maintenance)
                 { case 0: *IOp.AlarmLifetime__Pump1_CheckValve = Value; break;  case 1: *IOp.AlarmLifetime__Pump2_CheckValve = Value; break;  case 2: *IOp.AlarmLifetime__Pump3_CheckValve = Value; break; }
         break;
     }
@@ -46,43 +46,43 @@ _GUI_Modifier _GUI_Modifiers__Maintenance [] = { //Reminders: Alarms will show i
 
 
 void _GUI_clicked__Button__Maintenance__Pump1 (lv_event_t* event) {
-    _GUI.SelectedPump__Maintenance = 0;
+    *IOp/*_GUI*/.SelectedPump__Maintenance = 0;
     _GUI_display_PumpSelection__Maintenance();
 }
 
 void _GUI_clicked__Button__Maintenance__Pump2 (lv_event_t* event) {
-    _GUI.SelectedPump__Maintenance = 1;
+    *IOp/*_GUI*/.SelectedPump__Maintenance = 1;
     _GUI_display_PumpSelection__Maintenance();
 }
 
 void _GUI_clicked__Button__Maintenance__Pump3 (lv_event_t* event) {
-    _GUI.SelectedPump__Maintenance = 2;
+    *IOp/*_GUI*/.SelectedPump__Maintenance = 2;
     _GUI_display_PumpSelection__Maintenance();
 }
 
 void _GUI_clicked__Button__Maintenance__Washport_Rinse (lv_event_t* event) {
-    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Maintenance__Washport_Rinse );
+    _GUI_triggerBackendEvent( _GUI_TO_BACKEND_EVENT__Maintenance__Washport_Rinse );
 }
 
 void _GUI_clicked__Button__Maintenance__Reset_PumpPart_Runtime (lv_event_t* event) {
-    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Maintenance__Reset_PumpPart_Runtime );
+    _GUI_triggerBackendEvent( _GUI_TO_BACKEND_EVENT__Maintenance__Reset_PumpPart_Runtime );
 }
 
 void _GUI_clicked__Button__Maintenance__ZeroPressure_Transducer (lv_event_t* event) {
-    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Maintenance__ZeroPressure_Transducer );
+    _GUI_triggerBackendEvent( _GUI_TO_BACKEND_EVENT__Maintenance__ZeroPressure_Transducer );
 }
 
 void _GUI_clicked__Button__Maintenance__Sensor_MoveMotorsHome (lv_event_t* event) {
-    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Maintenance__Sensor_MoveMotorsHome );
-    _GUI_displayPopupScreen( 1? "Success" : "Failed", "",  "", -1,  "OK", GUI_SCREEN_ID__Maintenance ); //GUI_SCREEN_ID__BACK
+    _GUI_triggerBackendEvent( _GUI_TO_BACKEND_EVENT__Maintenance__Sensor_MoveMotorsHome );
+    _GUI_displayPopupScreen( 1? "Success" : "Failed", "",  "", -1,  "OK", GUI_SCREEN_ID__Maintenance, -1 ); //GUI_SCREEN_ID__BACK
 }
 
 
 
 void _GUI_display_PumpSelection__Maintenance () {
-    _GUI_setWidgetCheckedState( ui_Button__Maintenance__Pump1, _GUI.SelectedPump__Maintenance == 0 );
-    _GUI_setWidgetCheckedState( ui_Button__Maintenance__Pump2, _GUI.SelectedPump__Maintenance == 1 );
-    _GUI_setWidgetCheckedState( ui_Button__Maintenance__Pump3, _GUI.SelectedPump__Maintenance == 2 );
+    _GUI_setWidgetCheckedState( ui_Button__Maintenance__Pump1, *IOp/*_GUI*/.SelectedPump__Maintenance == 0 );
+    _GUI_setWidgetCheckedState( ui_Button__Maintenance__Pump2, *IOp/*_GUI*/.SelectedPump__Maintenance == 1 ); _GUI_conditionalShowWidget( ui_Button__Maintenance__Pump2, *IOp.NumberOfPumps >= 2 );
+    _GUI_setWidgetCheckedState( ui_Button__Maintenance__Pump3, *IOp/*_GUI*/.SelectedPump__Maintenance == 2 ); _GUI_conditionalShowWidget( ui_Button__Maintenance__Pump3, *IOp.NumberOfPumps >= 3 );
     _GUI_refreshScreenObservers( _GUI_Observers__Maintenance, true ); _GUI_refreshScreenModifiers( _GUI_Modifiers__Maintenance );
     _GUI_hideWidget( ui_Keyboard__Maintenance__PumpPart_RuntimeReminderPeriod_Entry );
 }

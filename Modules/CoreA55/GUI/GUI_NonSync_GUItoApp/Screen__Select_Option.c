@@ -11,7 +11,7 @@ _GUI_Modifier _GUI_Modifiers__Select_Option [] = {
 
 
 void _GUI_clicked__Button__Select_Option__OK  (lv_event_t* event) {
-    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Select_Option__OK );
+    _GUI_triggerBackendEvent( _GUI_TO_BACKEND_EVENT__Select_Option__OK );
 }
 
 

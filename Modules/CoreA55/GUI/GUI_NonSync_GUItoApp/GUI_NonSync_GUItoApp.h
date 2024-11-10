@@ -84,6 +84,7 @@ void _GUI_changed__Roller__Initial_Setup__PistonSize (lv_event_t* event);
 void _GUI_changed__Roller__Initial_Setup__StrokeLength (lv_event_t* event);
 void _GUI_changed__Roller__Initial_Setup__WettedParts (lv_event_t* event);
 
+void _GUI_changed__Dropdown__Pump_Settings__Property (lv_event_t* event);
 void _GUI_changed__Slider__Pump_Settings__CompressibilityCompensation_Value (lv_event_t* event);
 
 

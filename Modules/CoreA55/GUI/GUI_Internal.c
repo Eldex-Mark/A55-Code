@@ -25,8 +25,8 @@ struct GUIprivateVariables _GUI = {
         [GUI_SCREEN_ID__Popup_Modal]        = { & ui_Screen__Popup_Modal,        _GUI_initScreen__Popup_Modal,        _GUI_initScreenValues__Popup_Modal,        _GUI_Observers__Popup_Modal,       _GUI_Modifiers__Popup_Modal       }
     },
     .PasswordScreen_Mode = _GUI_PASSWORD_SCREEN_MODE__CHANGE_REMOTE, .PasswordScreen_TargetScreenID = GUI_SCREEN_ID__Home, .PasswordScreen_TargetWidget = NULL, .PasswordScreen_RememberedPasswordType = -1,
-    .SelectedPump__Initial_Setup = 1, .SelectedPump__Home = 1/*2*/, .SelectedPump__Pump_Settings = 0, .SelectedPump__Maintenance = 1, .SelectedPump__Communication_Serial = 2,
-    .WiFi_HiddenNetwork = 0/*1*/, .Maintenance__PumpPart = 1, .Pump_Settings__SettingID = 2
+    .SelectedPump__Initial_Setup = 0/*1*/, .SelectedPump__Home = 0/*1*//*2*/, .SelectedPump__Pump_Settings = 0, .SelectedPump__Maintenance = 0/*1*/, .SelectedPump__Communication_Serial = 0/*2*/,
+    .WiFi_HiddenNetwork = 0/*1*/, .Maintenance__PumpPart = 0/*1*/, .Pump_Settings__SettingID = 1/*2*/
 };
 
 
@@ -84,18 +84,39 @@ static void _GUI_loadScreenByID_Event (lv_event_t* event) { //Emscripten freezes
     _GUI_loadScreenByID( (uintptr_t) lv_event_get_user_data( event ) );
 }
 
-void _GUI_setClickScreenChangeByID ( lv_obj_t* widget, GUI_ScreenIDs screen_id) {
+void _GUI_setClickScreenChangeByID (lv_obj_t* widget, GUI_ScreenIDs screen_id) {
     _GUI_setClickCallbackWithValue( widget, _GUI_loadScreenByID_Event, screen_id );
+}
+void _GUI_clearClickScreenChangeByID (lv_obj_t* widget) {
+    lv_obj_remove_event_cb( widget, _GUI_loadScreenByID_Event );
 }
 
 
-void _GUI_displayPopupScreen (char* title, char* text, char* leftbutton_text, int leftbutton_screen_id, char* rightbutton_text, int rightbutton_screen_id) {
+static void _GUI_sendEventMessage_Event (lv_event_t* event) {
+    _GUI_triggerBackendEvent( (uintptr_t) lv_event_get_user_data( event ) );
+}
+
+void _GUI_setClickBackendEventSend (lv_obj_t* widget, int event_id) {
+    _GUI_setClickCallbackWithValue( widget, _GUI_sendEventMessage_Event, event_id );
+}
+void _GUI_clearClickBackendEventSend (lv_obj_t* widget) {
+    lv_obj_remove_event_cb( widget, _GUI_sendEventMessage_Event );
+}
+
+
+void _GUI_displayPopupScreen (char* title, char* text, char* leftbutton_text, int leftbutton_screen_id, char* rightbutton_text, int rightbutton_screen_id, int rightbutton_event_id) {
     _GUI_setWidgetText( ui_Label__Popup_Modal__Title, title );
     _GUI_setWidgetText( ui_Label__Popup_Modal__Text, text );
     _GUI_setWidgetText( ui_ButtonLabel__Popup_Modal__Left, leftbutton_text ); _GUI_conditionalShowWidget( ui_Button__Popup_Modal__Left, leftbutton_text[0]!='\0' );
     _GUI_setWidgetText( ui_ButtonLabel__Popup_Modal__Right, rightbutton_text ); _GUI_conditionalShowWidget( ui_Button__Popup_Modal__Right, rightbutton_text[0]!='\0' );
+
+    _GUI_clearClickScreenChangeByID( ui_Button__Popup_Modal__Left ); //delete events previously used by the popup
     if (leftbutton_screen_id >= 0) _GUI_setClickScreenChangeByID( ui_Button__Popup_Modal__Left, leftbutton_screen_id==GUI_SCREEN_ID__BACK? _GUI.PreviousScreenID : leftbutton_screen_id );
+    _GUI_clearClickScreenChangeByID( ui_Button__Popup_Modal__Right ); //delete events previously used by the popup
     if (rightbutton_screen_id >= 0) _GUI_setClickScreenChangeByID( ui_Button__Popup_Modal__Right, rightbutton_screen_id==GUI_SCREEN_ID__BACK? _GUI.PreviousScreenID : rightbutton_screen_id );
+    _GUI_clearClickBackendEventSend( ui_Button__Popup_Modal__Right ); //delete events previously used by the popup
+    if (rightbutton_event_id >= 0) _GUI_setClickBackendEventSend( ui_Button__Popup_Modal__Right, rightbutton_event_id );
+
     lv_obj_set_parent( ui_Panel__Popup_Modal__Full, lv_layer_top() );  //_GUI_loadScreenByID( GUI_SCREEN_ID__Popup_Modal );
 }
 
@@ -109,7 +130,7 @@ void _GUI_displayStatusMessage (char* message) { //backend or GUI sets the messa
 }
 
 
-inline void _GUI_triggerEvent (int event_id) {
+inline void _GUI_triggerBackendEvent (int event_id) {
     CoreMessaging_broadcastEvent( event_id ); //CoreMessaging_callEvent( event_id, COREMESSAGING_ENDPOINT__CORE_A55 );
 }
 

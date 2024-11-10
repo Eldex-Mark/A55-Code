@@ -21,8 +21,9 @@
  #define DELAY_MILLISECONDS(x) usleep(x * 1000)
 #else
  #include "FreeRTOS.h"
+ #include "platform_info.h"
  #include "task.h"
- #define DELAY_MILLISECONDS(x) vTaskDelay(x)
+ #define DELAY_MILLISECONDS(x) vTaskDelay(x/portTICK_PERIOD_MS)
  #define  TESTBENCH_REFRESH_PERIOD  CORE_M33__COREMESSAGING_REFRESH_PERIOD
 #endif
 
@@ -75,6 +76,7 @@ void Emscripten_Loop () { //(void *arg) {
 
 
 #if ( (!defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) && !SQUARELINE_BUILD_TARGET__EMSCRIPTEN )
+
 int main (int argc, char* argv[]) {
     int InputEventID = GUI_ARGUMENT_UNINITIALIZED, FrameBufferID = GUI_ARGUMENT_UNINITIALIZED;
 
@@ -84,10 +86,23 @@ int main (int argc, char* argv[]) {
         if (argc>=3) sscanf( argv[2], "%d", &FrameBufferID );
     }
     TestBench_init( InputEventID, FrameBufferID );
+
+#else
+
+#if (defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) && SQUARELINE_BUILD_TARGET__BOARD__CORE_M33)
+struct rpmsg_device *RPMsg_Device;
+void *RPMsg_Platform;
+int app (struct rpmsg_device* rdev, void* platform, unsigned long parameter) { //Renesas FreeRTOS MHU package calls app() through MainTask_entry created in MainTask from main()
+    (void) parameter; //(void) platform;
+    RPMsg_Device = rdev; RPMsg_Platform = platform;
 #else
 int main () {
-    TestBench_init( -1, -1 );
 #endif
+
+    TestBench_init( -1, -1 );
+
+#endif
+
 
     #if (SQUARELINE_BUILD_TARGET__EMSCRIPTEN)
      emscripten_set_main_loop_arg( Emscripten_Loop, NULL, (1000/TESTBENCH_REFRESH_PERIOD) /*-1*/, true );

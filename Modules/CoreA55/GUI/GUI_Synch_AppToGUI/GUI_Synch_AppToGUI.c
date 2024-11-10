@@ -39,12 +39,12 @@ void _GUI_refresh_SynchOutputs () { //Application-value/state/pointer-following 
     //other manually handled cyclic object checks & changes can be put here too:
 
     static int SelfTest_Progress_Percentage_previous = -1;
-    if (*IOp.SelfTest_Progress_Percentage == 0 && SelfTest_Progress_Percentage_previous > 90) _GUI_displayPopupScreen( "The test has ended", "",  "", -1,  "OK", GUI_SCREEN_ID__Self_Test ); //GUI_SCREEN_ID__BACK ); //_GUI_loadScreenByID( GUI_SCREEN_ID__Popup_Modal );
+    if (*IOp.SelfTest_Progress_Percentage == 0 && SelfTest_Progress_Percentage_previous > 90) _GUI_displayPopupScreen( "The test has ended", "",  "", -1,  "OK", GUI_SCREEN_ID__Self_Test, -1 ); //GUI_SCREEN_ID__BACK ); //_GUI_loadScreenByID( GUI_SCREEN_ID__Popup_Modal );
     SelfTest_Progress_Percentage_previous = *IOp.SelfTest_Progress_Percentage;
 
     static int FirmwareUpdate_ProgressPercentage_previous = -1;
     if (*IOp.FirmwareUpdate_ProgressPercentage == 0 && FirmwareUpdate_ProgressPercentage_previous > 90) {
-        _GUI_displayPopupScreen( "", 1? "The firmware has been successfully updated": 1? "No internet connection" : "Error: ERROR_MESSAGE",  "", -1,  "OK", GUI_SCREEN_ID__Firmware_Update ); //GUI_SCREEN_ID__BACK );
+        _GUI_displayPopupScreen( "", 1? "The firmware has been successfully updated": 1? "No internet connection" : "Error: ERROR_MESSAGE",  "", -1,  "OK", GUI_SCREEN_ID__Firmware_Update, -1 ); //GUI_SCREEN_ID__BACK );
         //_GUI_displayPopupScreen( "", 1? "The firmware has been successfully updated": 1? "The installer file \"optos_firmware_installer\" could not be found in the root of the flash drive" : 1? "No Flash drive found" : "Error: ERROR_MESSAGE",  "", -1,  "OK", GUI_SCREEN_ID__Firmware_Update ); //GUI_SCREEN_ID__BACK );
     }
     FirmwareUpdate_ProgressPercentage_previous = *IOp.FirmwareUpdate_ProgressPercentage;

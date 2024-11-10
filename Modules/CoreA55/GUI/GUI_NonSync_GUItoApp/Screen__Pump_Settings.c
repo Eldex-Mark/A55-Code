@@ -28,23 +28,22 @@ static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getPumpSettingVal
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT;
     switch (_GUI.Pump_Settings__SettingID) { //synchronization-setting is probably only needed once as common for all pumps, isn't it?
         case PUMPSETTING__SYNCHRONIZATION:
-            _GUI_displayPopupScreen( "", "In order to change this option, the pumps must be stopped and the machine needs to be restarted. Do you want to change this, stop the pumps and restart the machine now?", "Cancel", GUI_SCREEN_ID__Pump_Settings, "OK", GUI_SCREEN_ID__Pump_Settings ); //GUI_SCREEN_ID__BACK
-            return (_GUI_ValueContainer) { .Int = _GUI.SelectedPump__Pump_Settings==0? IOp.PumpSynchronizationModes->Synchronization_1 : (_GUI.SelectedPump__Pump_Settings==1? IOp.PumpSynchronizationModes->Synchronization_2 : IOp.PumpSynchronizationModes->Synchronization_3) };
-        case PUMPSETTING__DISPENSE_MODE: return (_GUI_ValueContainer) { .Int = _GUI_getPumpMode( _GUI.SelectedPump__Pump_Settings ) };
-        case PUMPSETTING__REFILLOUTPUT_RATIO: return (_GUI_ValueContainer) { .Int = _GUI.SelectedPump__Pump_Settings==0? IOp.PumpRefillOutputRatios->Output_Ratio_Pump1 : (_GUI.SelectedPump__Pump_Settings==1? IOp.PumpRefillOutputRatios->Output_Ratio_Pump2 : IOp.PumpRefillOutputRatios->Output_Ratio_Pump3) };
-        case PUMPSETTING__ERROR_STOP_DELAY: return (_GUI_ValueContainer) { .Int = _GUI.SelectedPump__Pump_Settings==0? IOp.PumpErrorStopDelays->Err_Delay_1 : (_GUI.SelectedPump__Pump_Settings==1? IOp.PumpErrorStopDelays->Err_Delay_2 : IOp.PumpErrorStopDelays->Err_Delay_3) };
-        case PUMPSETTING__VOLTAGE_OUTPUT: return (_GUI_ValueContainer) { .Int = _GUI.SelectedPump__Pump_Settings==0? IOp.PumpVoltageOutputTypes->Voltage_Output_1 : (_GUI.SelectedPump__Pump_Settings==1? IOp.PumpVoltageOutputTypes->Voltage_Output_2 : IOp.PumpVoltageOutputTypes->Voltage_Output_3) };
+            return (_GUI_ValueContainer) { .Int = *IOp/*_GUI*/.SelectedPump__Pump_Settings==0? IOp.PumpSynchronizationModes->Synchronization_1 : (*IOp/*_GUI*/.SelectedPump__Pump_Settings==1? IOp.PumpSynchronizationModes->Synchronization_2 : IOp.PumpSynchronizationModes->Synchronization_3) };
+        case PUMPSETTING__DISPENSE_MODE: return (_GUI_ValueContainer) { .Int = _GUI_getPumpMode( *IOp/*_GUI*/.SelectedPump__Pump_Settings ) };
+        case PUMPSETTING__REFILLOUTPUT_RATIO: return (_GUI_ValueContainer) { .Int = *IOp/*_GUI*/.SelectedPump__Pump_Settings==0? IOp.PumpRefillOutputRatios->Output_Ratio_Pump1 : (*IOp/*_GUI*/.SelectedPump__Pump_Settings==1? IOp.PumpRefillOutputRatios->Output_Ratio_Pump2 : IOp.PumpRefillOutputRatios->Output_Ratio_Pump3) };
+        case PUMPSETTING__ERROR_STOP_DELAY: return (_GUI_ValueContainer) { .Int = *IOp/*_GUI*/.SelectedPump__Pump_Settings==0? IOp.PumpErrorStopDelays->Err_Delay_1 : (*IOp/*_GUI*/.SelectedPump__Pump_Settings==1? IOp.PumpErrorStopDelays->Err_Delay_2 : IOp.PumpErrorStopDelays->Err_Delay_3) };
+        case PUMPSETTING__VOLTAGE_OUTPUT: return (_GUI_ValueContainer) { .Int = *IOp/*_GUI*/.SelectedPump__Pump_Settings==0? IOp.PumpVoltageOutputTypes->Voltage_Output_1 : (*IOp/*_GUI*/.SelectedPump__Pump_Settings==1? IOp.PumpVoltageOutputTypes->Voltage_Output_2 : IOp.PumpVoltageOutputTypes->Voltage_Output_3) };
     }
     return input_value;
 }
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setPumpSettingValue ) {
     switch (_GUI.Pump_Settings__SettingID) { //synchronization-setting is probably only needed once as common for all pumps, isn't it?
-        case PUMPSETTING__SYNCHRONIZATION: switch (_GUI.SelectedPump__Pump_Settings) { case 0: IOp.PumpSynchronizationModes->Synchronization_1 = input_value.Int; break;  case 1: IOp.PumpSynchronizationModes->Synchronization_2 = input_value.Int; break;  case 2: IOp.PumpSynchronizationModes->Synchronization_3 = input_value.Int; break; }  break;
-        case PUMPSETTING__DISPENSE_MODE: switch (_GUI.SelectedPump__Pump_Settings) { case 0: IOp.PumpDispenseModes->Dispense_Mode_Pump1 = input_value.Int; break;  case 1: IOp.PumpDispenseModes->Dispense_Mode_Pump2 = input_value.Int; break;  case 2: IOp.PumpDispenseModes->Dispense_Mode_Pump3 = input_value.Int; break; }  break;
-        case PUMPSETTING__REFILLOUTPUT_RATIO: switch (_GUI.SelectedPump__Pump_Settings) { case 0: IOp.PumpRefillOutputRatios->Output_Ratio_Pump1 = input_value.Int; break;  case 1: IOp.PumpRefillOutputRatios->Output_Ratio_Pump2 = input_value.Int; break;  case 2: IOp.PumpRefillOutputRatios->Output_Ratio_Pump3 = input_value.Int; break; }  break;
-        case PUMPSETTING__ERROR_STOP_DELAY: switch (_GUI.SelectedPump__Pump_Settings) { case 0: IOp.PumpErrorStopDelays->Err_Delay_1 = input_value.Int; break;  case 1: IOp.PumpErrorStopDelays->Err_Delay_2 = input_value.Int; break;  case 2: IOp.PumpErrorStopDelays->Err_Delay_3 = input_value.Int; break; }  break;
-        case PUMPSETTING__VOLTAGE_OUTPUT: switch (_GUI.SelectedPump__Pump_Settings) { case 0: IOp.PumpVoltageOutputTypes->Voltage_Output_1 = input_value.Int; break;  case 1: IOp.PumpVoltageOutputTypes->Voltage_Output_2 = input_value.Int; break;  case 2: IOp.PumpVoltageOutputTypes->Voltage_Output_3 = input_value.Int; break; }  break;
+        case PUMPSETTING__SYNCHRONIZATION: switch (*IOp/*_GUI*/.SelectedPump__Pump_Settings) { case 0: IOp.PumpSynchronizationModes->Synchronization_1 = input_value.Int; break;  case 1: IOp.PumpSynchronizationModes->Synchronization_2 = input_value.Int; break;  case 2: IOp.PumpSynchronizationModes->Synchronization_3 = input_value.Int; break; }  break;
+        case PUMPSETTING__DISPENSE_MODE: switch (*IOp/*_GUI*/.SelectedPump__Pump_Settings) { case 0: IOp.PumpDispenseModes->Dispense_Mode_Pump1 = input_value.Int; break;  case 1: IOp.PumpDispenseModes->Dispense_Mode_Pump2 = input_value.Int; break;  case 2: IOp.PumpDispenseModes->Dispense_Mode_Pump3 = input_value.Int; break; }  break;
+        case PUMPSETTING__REFILLOUTPUT_RATIO: switch (*IOp/*_GUI*/.SelectedPump__Pump_Settings) { case 0: IOp.PumpRefillOutputRatios->Output_Ratio_Pump1 = input_value.Int; break;  case 1: IOp.PumpRefillOutputRatios->Output_Ratio_Pump2 = input_value.Int; break;  case 2: IOp.PumpRefillOutputRatios->Output_Ratio_Pump3 = input_value.Int; break; }  break;
+        case PUMPSETTING__ERROR_STOP_DELAY: switch (*IOp/*_GUI*/.SelectedPump__Pump_Settings) { case 0: IOp.PumpErrorStopDelays->Err_Delay_1 = input_value.Int; break;  case 1: IOp.PumpErrorStopDelays->Err_Delay_2 = input_value.Int; break;  case 2: IOp.PumpErrorStopDelays->Err_Delay_3 = input_value.Int; break; }  break;
+        case PUMPSETTING__VOLTAGE_OUTPUT: switch (*IOp/*_GUI*/.SelectedPump__Pump_Settings) { case 0: IOp.PumpVoltageOutputTypes->Voltage_Output_1 = input_value.Int; break;  case 1: IOp.PumpVoltageOutputTypes->Voltage_Output_2 = input_value.Int; break;  case 2: IOp.PumpVoltageOutputTypes->Voltage_Output_3 = input_value.Int; break; }  break;
     }
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__CUSTOMWRITE; return input_value;
 }
@@ -76,36 +75,43 @@ _GUI_Modifier _GUI_Modifiers__Pump_Settings [] = {
 
 
 void _GUI_clicked__Button__Pump_Settings__Pump1 (lv_event_t* event) {
-    _GUI.SelectedPump__Pump_Settings = 0;
+    *IOp/*_GUI*/.SelectedPump__Pump_Settings = 0;
     _GUI_display_PumpSelection__Pump_Settings();
 }
 
 void _GUI_clicked__Button__Pump_Settings__Pump2 (lv_event_t* event) {
-    _GUI.SelectedPump__Pump_Settings = 1;
+    *IOp/*_GUI*/.SelectedPump__Pump_Settings = 1;
     _GUI_display_PumpSelection__Pump_Settings();
 }
 
 void _GUI_clicked__Button__Pump_Settings__Pump3 (lv_event_t* event) {
-    _GUI.SelectedPump__Pump_Settings = 2;
+    *IOp/*_GUI*/.SelectedPump__Pump_Settings = 2;
     _GUI_display_PumpSelection__Pump_Settings();
 }
 
 
 void _GUI_changed__Slider__Pump_Settings__CompressibilityCompensation_Value (lv_event_t* event) {
     int Value = _GUI_getSliderValue( ui_Slider__Pump_Settings__CompressibilityCompensation_Value );
-    switch (_GUI.SelectedPump__Pump_Settings) {
+    switch (*IOp/*_GUI*/.SelectedPump__Pump_Settings) {
         case 0: *IOp.FluidCompressibility_Pump1 = Value; break; case 1: *IOp.FluidCompressibility_Pump2 = Value; break; case 2: *IOp.FluidCompressibility_Pump3 = Value; break;
+    }
+}
+
+void _GUI_changed__Dropdown__Pump_Settings__Property (lv_event_t* event) {
+    if ( _GUI_getSelectorIndex( ui_Dropdown__Pump_Settings__Property ) == PUMPSETTING__SYNCHRONIZATION ) {
+        _GUI_displayPopupScreen( "", "In order to change this option, the pumps must be stopped and the machine needs to be restarted. Do you want to change this, stop the pumps and restart the machine now?"
+        , "Cancel", GUI_SCREEN_ID__Pump_Settings, "OK", GUI_SCREEN_ID__Pump_Settings, -1 ); //GUI_SCREEN_ID__BACK
     }
 }
 
 
 
 void _GUI_display_PumpSelection__Pump_Settings () {
-    _GUI_setWidgetCheckedState( ui_Button__Pump_Settings__Pump1, _GUI.SelectedPump__Pump_Settings == 0 );
-    _GUI_setWidgetCheckedState( ui_Button__Pump_Settings__Pump2, _GUI.SelectedPump__Pump_Settings == 1 );
-    _GUI_setWidgetCheckedState( ui_Button__Pump_Settings__Pump3, _GUI.SelectedPump__Pump_Settings == 2 );
+    _GUI_setWidgetCheckedState( ui_Button__Pump_Settings__Pump1, *IOp/*_GUI*/.SelectedPump__Pump_Settings == 0 );
+    _GUI_setWidgetCheckedState( ui_Button__Pump_Settings__Pump2, *IOp/*_GUI*/.SelectedPump__Pump_Settings == 1 ); _GUI_conditionalShowWidget( ui_Button__Pump_Settings__Pump2, *IOp.NumberOfPumps >= 2 );
+    _GUI_setWidgetCheckedState( ui_Button__Pump_Settings__Pump3, *IOp/*_GUI*/.SelectedPump__Pump_Settings == 2 ); _GUI_conditionalShowWidget( ui_Button__Pump_Settings__Pump3, *IOp.NumberOfPumps >= 3 );
     _GUI_refreshModifierWidget( &_GUI_Modifiers__Pump_Settings[ MODIFIER_INDEX__PUMPSETTING_VALUELIST ] );
-    _GUI_setSliderValue( ui_Slider__Pump_Settings__CompressibilityCompensation_Value, (int) _GUI.SelectedPump__Pump_Settings==0? *IOp.FluidCompressibility_Pump1 : (_GUI.SelectedPump__Pump_Settings==1? *IOp.FluidCompressibility_Pump2:*IOp.FluidCompressibility_Pump3) );
+    _GUI_setSliderValue( ui_Slider__Pump_Settings__CompressibilityCompensation_Value, (int) *IOp/*_GUI*/.SelectedPump__Pump_Settings==0? *IOp.FluidCompressibility_Pump1 : (*IOp/*_GUI*/.SelectedPump__Pump_Settings==1? *IOp.FluidCompressibility_Pump2:*IOp.FluidCompressibility_Pump3) );
     _GUI_refreshScreenObservers( _GUI_Observers__Pump_Settings, true );
 }
 
@@ -113,7 +119,7 @@ void _GUI_display_PumpSelection__Pump_Settings () {
 
 void _GUI_createPumpSettingValueList () {
     switch (_GUI.Pump_Settings__SettingID) {
-        case PUMPSETTING__SYNCHRONIZATION/*0*/: _GUI_createSelectorOptions( ui_Dropdown__Pump_Settings__Value, *IOp.NumberOfPumps==3? "No synchronization\n1 and 2 synchronized\n1 and 3 synchronized\nAll synchronized" : "No synchronization\nsynchronized" ); break; //synchronization
+        case PUMPSETTING__SYNCHRONIZATION/*0*/: _GUI_createSelectorOptions( ui_Dropdown__Pump_Settings__Value, *IOp.NumberOfPumps==3? "No synchronization\n1 and 2 synchronized\n1 and 3 synchronized\nAll synchronized" : (*IOp.NumberOfPumps==2 ? "No synchronization\nsynchronized":"No synchronization") ); break; //synchronization
         case PUMPSETTING__DISPENSE_MODE/*1*/: _GUI_createSelectorOptions( ui_Dropdown__Pump_Settings__Value, "Flow\nPressure\nDispense" ); break; //dispense
         case PUMPSETTING__REFILLOUTPUT_RATIO/*2*/: _GUI_createSelectorOptions( ui_Dropdown__Pump_Settings__Value, "Full Out\n15 / 85\n30 / 70\n50 / 50\n70 / 30" ); break; //refill output ratio
         case PUMPSETTING__ERROR_STOP_DELAY/*3*/: _GUI_createSelectorOptions_Integer( ui_Dropdown__Pump_Settings__Value, 0, 4, 1, "" ); break; //Error delay

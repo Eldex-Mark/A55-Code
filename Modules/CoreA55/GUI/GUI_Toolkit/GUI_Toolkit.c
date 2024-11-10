@@ -103,8 +103,8 @@ bool _GUI_getWidgetFocusedState (lv_obj_t* widget) { return lv_obj_has_state(wid
 
 void _GUI_showWidget (lv_obj_t* widget) { if ( lv_obj_is_valid(widget) ) lv_obj_remove_flag( widget, LV_OBJ_FLAG_HIDDEN ); }
 void _GUI_hideWidget (lv_obj_t* widget) { if ( lv_obj_is_valid(widget) ) lv_obj_add_flag( widget, LV_OBJ_FLAG_HIDDEN ); }
-void _GUI_enableWidget (lv_obj_t* widget) { if ( lv_obj_is_valid(widget) ) { lv_obj_remove_state( widget, LV_STATE_DISABLED ); /*lv_obj_add_flag( widget, LV_OBJ_FLAG_CLICKABLE );*/ } }
-void _GUI_disableWidget (lv_obj_t* widget) { if ( lv_obj_is_valid(widget) ) { lv_obj_add_state( widget, LV_STATE_DISABLED ); /*lv_obj_remove_flag( widget, LV_OBJ_FLAG_CLICKABLE );*/ } }
+void _GUI_enableWidget (lv_obj_t* widget) { if ( lv_obj_is_valid(widget) ) { lv_obj_remove_state( widget, LV_STATE_DISABLED ); lv_obj_add_flag( widget, LV_OBJ_FLAG_CLICKABLE ); } }
+void _GUI_disableWidget (lv_obj_t* widget) { if ( lv_obj_is_valid(widget) ) { lv_obj_add_state( widget, LV_STATE_DISABLED ); lv_obj_remove_flag( widget, LV_OBJ_FLAG_CLICKABLE ); } }
 
 void _GUI_conditionalShowWidget (lv_obj_t* widget, bool condition) { if (condition) _GUI_showWidget( widget ); else _GUI_hideWidget( widget ); }
 void _GUI_conditionalEnableWidget (lv_obj_t* widget, bool condition) { if (condition) _GUI_enableWidget( widget ); else _GUI_disableWidget( widget ); }

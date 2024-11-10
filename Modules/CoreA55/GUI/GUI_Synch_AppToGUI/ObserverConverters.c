@@ -17,9 +17,9 @@ _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_VersionNumbers ) {
 
 _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomeMainValue ) {
     static _GUI_ValueContainer Value;
-    switch ( _GUI_getPumpMode( _GUI.SelectedPump__Home ) ) {
+    switch ( _GUI_getPumpMode( *IOp/*_GUI*/.SelectedPump__Home ) ) {
         case _GUI_PUMPSETTING__DISPENSE_MODE__PRESSURE: *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT; Value.Int = *IOp.Pressure_Target; break;
-        case _GUI_PUMPSETTING__DISPENSE_MODE__FLOW: case _GUI_PUMPSETTING__DISPENSE_MODE__DISPENSE: *output_type = _GUI_SUBJECT_TYPE_CATEGORY__FLOAT; Value.Float = _GUI_getFlowRate( _GUI.SelectedPump__Home ); break;
+        case _GUI_PUMPSETTING__DISPENSE_MODE__FLOW: case _GUI_PUMPSETTING__DISPENSE_MODE__DISPENSE: *output_type = _GUI_SUBJECT_TYPE_CATEGORY__FLOAT; Value.Float = _GUI_getFlowRate( *IOp/*_GUI*/.SelectedPump__Home ); break;
     }
     if (_GUI_getTypeCategory( input_type ) != *output_type) *output_type = _GUI_SUBJECT_TYPE_CATEGORY__IGNORE;  //could filter to selected pump match too, but it works
     return Value;
@@ -27,26 +27,26 @@ _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomeMainValue ) {
 
 _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomePumpFlowAmount ) {
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__FLOAT;
-    return (_GUI_ValueContainer) { .Float = _GUI.SelectedPump__Home==0? *IOp.FlowAmount_Pump1 : (_GUI.SelectedPump__Home==1? *IOp.FlowAmount_Pump2 : *IOp.FlowAmount_Pump3) };
+    return (_GUI_ValueContainer) { .Float = *IOp/*_GUI*/.SelectedPump__Home==0? *IOp.FlowAmount_Pump1 : (*IOp/*_GUI*/.SelectedPump__Home==1? *IOp.FlowAmount_Pump2 : *IOp.FlowAmount_Pump3) };
 }
 
 _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomePumpRuntime ) {
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT;
-    return (_GUI_ValueContainer) { .Int = _GUI.SelectedPump__Home==0? *IOp.RunTime_Pump1 : (_GUI.SelectedPump__Home==1? *IOp.RunTime_Pump2 : *IOp.RunTime_Pump3) };
+    return (_GUI_ValueContainer) { .Int = *IOp/*_GUI*/.SelectedPump__Home==0? *IOp.RunTime_Pump1 : (*IOp/*_GUI*/.SelectedPump__Home==1? *IOp.RunTime_Pump2 : *IOp.RunTime_Pump3) };
 }
 
 
 _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getCompressibilityValue ) {
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT;
-    return (_GUI_ValueContainer) { .Int = _GUI.SelectedPump__Pump_Settings==0? *IOp.FluidCompressibility_Pump1 : (_GUI.SelectedPump__Pump_Settings==1? *IOp.FluidCompressibility_Pump2:*IOp.FluidCompressibility_Pump3) };
+    return (_GUI_ValueContainer) { .Int = *IOp/*_GUI*/.SelectedPump__Pump_Settings==0? *IOp.FluidCompressibility_Pump1 : (*IOp/*_GUI*/.SelectedPump__Pump_Settings==1? *IOp.FluidCompressibility_Pump2:*IOp.FluidCompressibility_Pump3) };
 }
 
 
 _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getPumpPartRuntime ) {
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT;
     switch (_GUI.Maintenance__PumpPart) {
-        case 0: return (_GUI_ValueContainer) { .Int = _GUI.SelectedPump__Maintenance==0? *IOp.TotalRunHours__Pump1_PistonSeal : (_GUI.SelectedPump__Maintenance==1? *IOp.TotalRunHours__Pump2_PistonSeal : *IOp.TotalRunHours__Pump3_PistonSeal) };
-        case 1: return (_GUI_ValueContainer) { .Int = _GUI.SelectedPump__Maintenance==0? *IOp.TotalRunHours__Pump1_CheckValve : (_GUI.SelectedPump__Maintenance==1? *IOp.TotalRunHours__Pump2_CheckValve : *IOp.TotalRunHours__Pump3_CheckValve) };
+        case 0: return (_GUI_ValueContainer) { .Int = *IOp/*_GUI*/.SelectedPump__Maintenance==0? *IOp.TotalRunHours__Pump1_PistonSeal : (*IOp/*_GUI*/.SelectedPump__Maintenance==1? *IOp.TotalRunHours__Pump2_PistonSeal : *IOp.TotalRunHours__Pump3_PistonSeal) };
+        case 1: return (_GUI_ValueContainer) { .Int = *IOp/*_GUI*/.SelectedPump__Maintenance==0? *IOp.TotalRunHours__Pump1_CheckValve : (*IOp/*_GUI*/.SelectedPump__Maintenance==1? *IOp.TotalRunHours__Pump2_CheckValve : *IOp.TotalRunHours__Pump3_CheckValve) };
     } return input_value; //make GCC happy
 }
 

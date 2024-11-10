@@ -14,3 +14,5 @@ cd ../script
 
 #After building copy the .bin files to the board and load+run them at startup in uboot manually or 'bootcmd' as described in the multi-os PDF.
 
+#Important: For CMake-based build the .o extensions in scripts/fsp.ld linker-script were modified to .c.o which CMake generates whatever is set.
+

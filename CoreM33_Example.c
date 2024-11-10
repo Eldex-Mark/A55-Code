@@ -61,7 +61,7 @@ void CoreM33_testEventFunction__RunSelfTest () {
 static void initVariables () {
     CORE_M33__NAMESPACE_ Factory_Initialization_Done = false; //true; //false;
     CORE_M33__NAMESPACE_ Model_Number = 123;
-    CORE_M33__NAMESPACE_ NumberOfPumps = 3;
+    CORE_M33__NAMESPACE_ NumberOfPumps = 3; //1; //3; //2; //1; //2; //3;
     strcpy( (char*) CORE_M33__NAMESPACE_ FactoryPassword, "fct" ); strcpy( (char*) CORE_M33__NAMESPACE_ UserPassword, "usr" ); strcpy( (char*) CORE_M33__NAMESPACE_ RemotePassword, "rmt" ); //to be on M33 it needs array-messaging finalized
     strcpy( (char*) CORE_M33__NAMESPACE_ Message_Center, "Dummy Status Message: Ensure a valid string here (terminated by 0)" );
     CORE_M33__NAMESPACE_ PistonSizes.PistonSize_Pump1 = 2; CORE_M33__NAMESPACE_ StrokeLengths.StrokeLength_Pump1 = 0; CORE_M33__NAMESPACE_ WettedParts.WettedPart_Pump1 = 2;

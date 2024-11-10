@@ -88,6 +88,7 @@ void _GUI_initScreen__Pump_Settings () {
     _GUI_setClickCallback( ui_Button__Pump_Settings__Pump1, _GUI_clicked__Button__Pump_Settings__Pump1 );
     _GUI_setClickCallback( ui_Button__Pump_Settings__Pump2, _GUI_clicked__Button__Pump_Settings__Pump2 );
     _GUI_setClickCallback( ui_Button__Pump_Settings__Pump3, _GUI_clicked__Button__Pump_Settings__Pump3 );
+    _GUI_setValueChangeCallback( ui_Dropdown__Pump_Settings__Property, _GUI_changed__Dropdown__Pump_Settings__Property );
     _GUI_setValueChangeCallback( ui_Slider__Pump_Settings__CompressibilityCompensation_Value, _GUI_changed__Slider__Pump_Settings__CompressibilityCompensation_Value );
 
     _GUI_createPumpSettingValueList();
@@ -120,6 +121,8 @@ void _GUI_initScreen__Maintenance () {
 
 void _GUI_initScreen__Communications () {
     //_GUI_setScreenLoadCallback( ui_Screen__Communications, _GUI_initScreenValues__Communications );
+
+    _GUI_createSelectorOptions( ui_Roller__Communications__Serial_SelectPump, *IOp.NumberOfPumps<=1 ? "Pump 1" : ( *IOp.NumberOfPumps==2? "Pump 1\nPump 2" : "Pump 1\nPump 2\nPump 3" ) );
 
     _GUI_setClickCallback( ui_Button__Communications__Serial, _GUI_clicked__Button__Communications__Serial );
     _GUI_setClickCallback( ui_Button__Communications__Ethernet, _GUI_clicked__Button__Communications__Ethernet );

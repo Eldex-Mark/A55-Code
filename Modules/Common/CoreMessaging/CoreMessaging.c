@@ -6,7 +6,11 @@
 #include <string.h> //for memcpy(), etc.
 
 #include "CoreMessaging.h"
-
+#if ( defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) && SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 )
+ #include "CoreM33_CoreMessaging.h"
+#elif ( defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) && SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 )
+ #include "CoreA55_CoreMessaging.h"
+#endif
 
 
 static CoreMessaging_EndPointDescriptor CoreMessaging_EndPoints [COREMESSAGING_ENDPOINT_AMOUNT];
@@ -172,6 +176,10 @@ void CoreMessaging_broadcastEvent (int event_id) { //send to all cores, and who 
 void CoreMessaging_init (CoreMessaging_VariableDescriptor* variable_descriptors, int endpoint_index) {
     static size_t ElementSize;
 
+   #if ( ( defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) && SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) || ( defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) && SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )
+    CoreMessagingDriver_init();
+   #endif
+
     CoreMessaging_EndPoints[ endpoint_index ].Variables = variable_descriptors;
     for (int i=0; variable_descriptors[i].Type != COREMESSAGING_VARIABLE_TYPE__END; ++i) {
         if (variable_descriptors[i].Count <= 1) CoreMessaging_castValueToVariable( variable_descriptors[i].Type, variable_descriptors[i].PreviousValue, variable_descriptors[i].VariablePointer ); //variable_descriptors[i].PreviousValue = CoreMessaging_castVariableToValue( variable_descriptors[i].Type, variable_descriptors[i].VariablePointer ); //The other way round? (Backend initializes the same variables on both sides.)
@@ -211,6 +219,10 @@ void CoreMessaging_refresh (CoreMessaging_VariableDescriptor* variable_descripto
     for (i=0; i < COREMESSAGING_EVENT_AMOUNT; ++i) {
         if ( CoreMessaging_checkEventReceipt( i, endpoint_index ) ) CoreMessaging_callEvent( i, endpoint_index );
     }
+
+   #if ( ( defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) && SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) || ( defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) && SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )
+    CoreMessagingDriver_refresh();
+   #endif
 }
 
 

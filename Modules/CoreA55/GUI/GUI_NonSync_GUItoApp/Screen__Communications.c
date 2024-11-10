@@ -18,13 +18,13 @@ static _GUI_HEADER_valueConverterFunction( _GUI_refreshSerialPortPumpSelection )
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getSerialPortAnalogOutputType ) {
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT; return (_GUI_ValueContainer) {
-        .Int = _GUI.SelectedPump__Communication_Serial==0? IOp.PumpAnalogOutputTypes->Analog_Output_pump_1
-               : (_GUI.SelectedPump__Communication_Serial==1? IOp.PumpAnalogOutputTypes->Analog_Output_pump_2 : IOp.PumpAnalogOutputTypes->Analog_Output_pump_3)
+        .Int = *IOp/*_GUI*/.SelectedPump__Communication_Serial==0? IOp.PumpAnalogOutputTypes->Analog_Output_pump_1
+               : (*IOp/*_GUI*/.SelectedPump__Communication_Serial==1? IOp.PumpAnalogOutputTypes->Analog_Output_pump_2 : IOp.PumpAnalogOutputTypes->Analog_Output_pump_3)
     };
 }
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setSerialPortAnalogOutputType ) {
-    switch (_GUI.SelectedPump__Communication_Serial) {
+    switch (*IOp/*_GUI*/.SelectedPump__Communication_Serial) {
         case 0: IOp.PumpAnalogOutputTypes->Analog_Output_pump_1 = input_value.Int; break;
         case 1: IOp.PumpAnalogOutputTypes->Analog_Output_pump_2 = input_value.Int; break;
         case 2: IOp.PumpAnalogOutputTypes->Analog_Output_pump_3 = input_value.Int; break;
@@ -127,7 +127,7 @@ static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getEthernetIPaddr
 
 
 _GUI_Modifier _GUI_Modifiers__Communications [] = {
- [0] = { _GUI_SUBJECT_TYPE__UINT8, &_GUI.SelectedPump__Communication_Serial, &ui_Roller__Communications__Serial_SelectPump, NULL, _GUI_refreshSerialPortPumpSelection },
+ [0] = { _GUI_SUBJECT_TYPE__UINT8P, &IOp/*_GUI*/.SelectedPump__Communication_Serial, &ui_Roller__Communications__Serial_SelectPump, NULL, _GUI_refreshSerialPortPumpSelection },
  [MODIFIER_INDEX__SERIAL__ANALOG_OUTPUT/*1*/] = { _GUI_SUBJECT_TYPE__UINT8P, &IOp.PumpAnalogOutputTypes, &ui_Roller__Communications__Serial_PumpAnalogControlPort, _GUI_valueConverter_getSerialPortAnalogOutputType, _GUI_valueConverter_setSerialPortAnalogOutputType },
  { _GUI_SUBJECT_TYPE__UINT8P, &IOp.SerialPortSelections, &ui_Roller__Communications__Serial_ProtocolTypeStandard, _GUI_valueConverter_getSerialPortStandard, _GUI_valueConverter_setSerialPortStandard },
  { _GUI_SUBJECT_TYPE__UINT8P, &IOp.RemoteControlRights, &ui_Switch__Communications__Serial_RemoteControl, _GUI_valueConverter_getSerialPortRemoteControl, _GUI_valueConverter_setSerialPortRemoteControl }, //If it is enabled then change the constant message in the message center to „Remote control is enabled”
@@ -162,11 +162,11 @@ void _GUI_clicked__Button__Communications__Ethernet (lv_event_t* event) { _GUI_s
 void _GUI_clicked__Button__Communications__WiFi (lv_event_t* event) { _GUI_showSubscreen__Communications__WiFi(); }
 
 void _GUI_clicked__Button__Communications__WiFi_Connect (lv_event_t* event) {
-    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Communications__WiFi_Connect );
+    _GUI_triggerBackendEvent( _GUI_TO_BACKEND_EVENT__Communications__WiFi_Connect );
 }
 
 void _GUI_clicked__Button__Communications__WiFi_ForgetConnection (lv_event_t* event) {
-    _GUI_triggerEvent( _GUI_TO_BACKEND_EVENT__Communications__WiFi_ForgetConnection );
+    _GUI_triggerBackendEvent( _GUI_TO_BACKEND_EVENT__Communications__WiFi_ForgetConnection );
 }
 
 

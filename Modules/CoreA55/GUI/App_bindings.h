@@ -154,6 +154,8 @@ struct IOpointers {
     uint8_t *const Max_Pressure;
     uint16_t (*const FlowRate_Graph) [2];
     uint16_t (*const Pressure_Graph) [2];*/
+
+    int *const SelectedPump__Initial_Setup; int *const SelectedPump__Home; int *const SelectedPump__Pump_Settings; int *const SelectedPump__Maintenance; int *const SelectedPump__Communication_Serial;
 };
 
 

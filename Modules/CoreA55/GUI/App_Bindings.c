@@ -7,6 +7,9 @@
 #define BACKEND_NAMESPACE_ //IO.
 #define BACKEND_POINTER_ &BACKEND_NAMESPACE_
 
+#define GUI_NAMESPACE_ _GUI.
+#define GUI_POINTER_ &GUI_NAMESPACE_
+
 
 
 //Binding of Aliases (pointers) for variables
@@ -161,6 +164,14 @@ struct IOpointers IOp = {
     .Max_Pressure = BACKEND_POINTER_ Max_Pressure,
     .FlowRate_Graph [30][2] = BACKEND_POINTER_ Flow_Rate_Graph,
     .Pressure_Graph [30][2] = BACKEND_POINTER_ Pressure_Graph [30][2],*/
+
+
+    //Simply change the linkages here to only one of the pump-selector variables to follow the same selection on all screens wherever it changes
+    .SelectedPump__Initial_Setup        = GUI_POINTER_ SelectedPump__Home, //SelectedPump__Initial_Setup,
+    .SelectedPump__Home                 = GUI_POINTER_ SelectedPump__Home,
+    .SelectedPump__Pump_Settings        = GUI_POINTER_ SelectedPump__Home, //SelectedPump__Pump_Settings,
+    .SelectedPump__Maintenance          = GUI_POINTER_ SelectedPump__Home, //SelectedPump__Maintenance,
+    .SelectedPump__Communication_Serial = GUI_POINTER_ SelectedPump__Home //SelectedPump__Communication_Serial
 };
 
 

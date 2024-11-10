@@ -81,7 +81,7 @@ include_directories (
 if ( (NOT SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) AND (NOT SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) )
  #set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=pointer-arith -Werror=int-conversion  -fstrict-aliasing -Werror=strict-aliasing -Wcast-align" )  #observe pointer type castings/conversions
  set( App_Sources TestBench.c CoreM33_Example.c CoreA55_Example.c )
- FILE( GLOB_RECURSE GUI_Sources CONFIGURE_DEPENDS Modules/Common/*.c Modules/CoreM33/CoreMessaging/*.c Modules/CoreA55/*.c )
+ FILE( GLOB_RECURSE GUI_Sources CONFIGURE_DEPENDS Modules/Common/*.c Modules/CoreA55/GUI/*.c )
 endif()
 
 
@@ -99,12 +99,18 @@ if (BUILD_CASE__UNIX_TO_WINDOWS) #Unix to Windows cross-compilation
 
 elseif (BUILD_CASE__UNIX_TO_BOARD OR BUILD_CASE__UNIX_TO_BOARD__CORE_A55)
 
+    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O" )
+
     if (BUILD_CASE__UNIX_TO_BOARD__CORE_A55)
+     set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O2 -g -DCFG_CA5X" )  #these were found in the Makefile of the MHU example
+     set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-type-limits" )  #comparing unsigned with <= to an offset which might be 0, if it works like this in rzg2_rproc.c, might not be a problem
+     set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-pointer-to-int-cast" )  #tests show integer will be able to hold a value castef from the pointer in rzg2_rproc.c, at least the code worked
+     set ( MHU_FOLDER Modules/CoreA55/OpenAMP_MHU )
+     include_directories ( ${MHU_FOLDER} )
      set( App_Sources TestBench.c CoreA55_Example.c )
      FILE( GLOB_RECURSE GUI_Sources CONFIGURE_DEPENDS Modules/Common/*.c Modules/CoreA55/*.c )
+     FILE( GLOB_RECURSE MHU_Sources CONFIGURE_DEPENDS Modules/CoreA55/CoreMessaging/*.c Modules/CoreA55/OpenAMP_MHU/*.c )
     endif()
-
-    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O" )
 
     set( CMAKE_SYSTEM_NAME Generic )
 
@@ -122,6 +128,7 @@ elseif (BUILD_CASE__UNIX_TO_BOARD__CORE_M33)
     set( EXECUTABLE_FILENAME ${EXECUTABLE_BASENAME}.elf )
 
     set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mthumb -mcmse -mcpu=cortex-m33+nodsp+nofp -fdiagnostics-parseable-fixits -O2 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -Wuninitialized -Wmissing-declarations -Wconversion -Wpointer-arith -Wshadow -Wlogical-op -Waggregate-return -Wfloat-equal -Wnull-dereference -g -gdwarf-4 -Wl,--start-group ${OBJS} ${USER_OBJS} -Wl,--end-group -T ${PROJECT_SOURCE_DIR}/Modules/CoreM33/Renesas_MHU/script/fsp.ld -lc -lgcc -lnosys -L${PROJECT_SOURCE_DIR}/Modules/CoreM33/Renesas_MHU/script -nostartfiles -Xlinker --gc-sections -Wl,-Map,${EXECUTABLE_BASENAME}.map --specs=nano.specs --specs=rdimon.specs --specs=nosys.specs" )
+    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-old-style-declaration" ) #'static' is not before 'volatile' seems not a big issue
     set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-float-equal " )  #we take care about this by only comparing float-to-float and double-to-double in the code, so this warning is false here
     set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-conversion -Wno-sign-compare -Wno-int-conversion -Wno-pointer-sign" )  #there are a lot of them in Renesas/FreeRTOS/libmetal code, better suppressing for now until any problems arise from this
     set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-missing-declarations -Wno-implicit-function-declaration" )  #these are really a problem, but suppressing it for now as the source builds fine with them
@@ -132,6 +139,7 @@ elseif (BUILD_CASE__UNIX_TO_BOARD__CORE_M33)
     set ( RZG_FOLDER ${MHU_FOLDER}/rzg )
     set ( FSP_FOLDER ${RZG_FOLDER}/fsp )
     include_directories (
+        ${MHU_FOLDER}/src
         ${MHU_FOLDER}/rzg_cfg/aws  ${MHU_FOLDER}/rzg_cfg/fsp_cfg  ${MHU_FOLDER}/rzg_cfg/fsp_cfg/bsp    ${MHU_FOLDER}/rzg_gen
         ${RZG_FOLDER}/arm/CMSIS_5/CMSIS/Core/Include  ${RZG_FOLDER}/aws/amazon-freertos/freertos_kernel/include    ${RZG_FOLDER}/linaro/libmetal/include  ${RZG_FOLDER}/linaro/open-amp/lib/include
         ${FSP_FOLDER}/inc/api  ${FSP_FOLDER}/inc/instances    ${FSP_FOLDER}/src/bsp/mcu/rzg2l  ${FSP_FOLDER}/src/rm_freertos_port
