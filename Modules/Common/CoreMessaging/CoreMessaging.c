@@ -26,13 +26,6 @@ static int CoreMessaging_Outgoing_ByteCount = 0;
 
 
 
-//Serializing variables/arrays/events for inter-CPU messaging:
-#if ( ( defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) && SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) || ( defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) && SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )
-__attribute__((always_inline)) static inline void CoreMessaging_appendMessage (uint8_t value ) { CoreMessaging_Outgoing_Message[ CoreMessaging_Outgoing_ByteCount++ ] = value; }
-#endif
-
-
-
 __attribute__((always_inline))
 static inline CoreMessaging_VariableTypes CoreMessaging_getTypeClass (CoreMessaging_VariableTypes type) {
     if ( /*COREMESSAGING_VARIABLE_TYPE__INT__START < type &&*/ type < COREMESSAGING_VARIABLE_TYPE__INT__END) {
@@ -101,6 +94,18 @@ static inline size_t CoreMessaging_castValueToVariable (CoreMessaging_VariableTy
 }
 
 
+
+//Serializing variables/arrays/events for inter-CPU messaging:
+#if ( ( defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) && SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) || ( defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) && SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )
+__attribute__((always_inline)) static inline void CoreMessaging_addByte (uint8_t value ) { CoreMessaging_Outgoing_Message[ CoreMessaging_Outgoing_ByteCount++ ] = value; }
+
+__attribute__((always_inline)) static inline void CoreMessaging_addValue (CoreMessaging_VariableTypes type, CoreMessaging_ValueContainer value ) {
+    CoreMessaging_Outgoing_ByteCount += CoreMessaging_castValueToVariable( type, value, &CoreMessaging_Outgoing_Message[ CoreMessaging_Outgoing_ByteCount ] );
+}
+#endif
+
+
+
 __attribute__((always_inline))
 static inline bool CoreMessaging_checkValueChange ( CoreMessaging_VariableTypes type, CoreMessaging_ValueContainer current_value, CoreMessaging_ValueContainer* previous_value__pointer ) {
     if ( CoreMessaging_getTypeClass( type ) == COREMESSAGING_VARIABLE_TYPE_CATEGORY__INT ) {
@@ -128,7 +133,7 @@ static inline void CoreMessaging_sendValue (int variable_index, CoreMessaging_Va
     CoreMessaging_castValueToVariable( type, value, TargetVariables[ variable_index ].VariablePointer );
     TargetVariables[ variable_index ].PreviousValue = value; //avoid triggering of a false 'change' at the endpoint
    #else
-    CoreMessaging_appendMessage( COREMESSAGING_COMMAND__SET_VARIABLE ); CoreMessaging_appendMessage( variable_index ); //CoreMessaging_appendMessage( value );
+    CoreMessaging_addByte( COREMESSAGING_COMMAND__SET_VARIABLE ); CoreMessaging_addByte( variable_index ); CoreMessaging_addValue( type, value );
    #endif
 }
 
@@ -149,13 +154,13 @@ static inline void CoreMessaging_sendArray (CoreMessaging_VariableDescriptor* va
     static CoreMessaging_VariableDescriptor* TargetVariables;
     TargetVariables = CoreMessaging_EndPoints[ target_endpoint_index ].Variables;
    #else
-    CoreMessaging_appendMessage( COREMESSAGING_COMMAND__SET_VARIABLE ); CoreMessaging_appendMessage( index );
+    CoreMessaging_addByte( COREMESSAGING_COMMAND__SET_VARIABLE ); CoreMessaging_addByte( index );
    #endif
     for (j = start_index /*0*/; j < array_size; ++j) { //update starting from the changed point
        #if ( ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) && ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )  //for now we don't want segfault with an uninitialized array of a single core
         ( (uint8_t*) TargetVariables[ index ].VariablePointer )[ j ] =
        #else
-        //CoreMessaging_appendMessage( value );
+        CoreMessaging_addByte( ( (uint8_t*) variable_descriptors[ index ].VariablePointer )[ j ] ); //CoreMessaging_addValue( type, value ); //byte-based approach is not OK for this
        #endif
         ( (uint8_t*) variable_descriptors[ index ].PreviousValue.Pointer )[ j ] = ( (uint8_t*) variable_descriptors[ index ].VariablePointer )[ j ]; //refresh array (or changed part of array if possible);
     }
@@ -180,7 +185,7 @@ inline void CoreMessaging_sendEvent (int event_id, int target_endpoint_index) {
     TargetEvents = CoreMessaging_EndPoints[ target_endpoint_index ].Events;
     TargetEvents[ event_id ].Triggered = true;
    #else
-    CoreMessaging_appendMessage( COREMESSAGING_COMMAND__SEND_EVENT ); CoreMessaging_appendMessage( event_id );
+    CoreMessaging_addByte( COREMESSAGING_COMMAND__SEND_EVENT ); CoreMessaging_addByte( event_id ); //event-parameters are not needed currently in the project, just simple 'trigger'-like callbacks
    #endif
 }
 

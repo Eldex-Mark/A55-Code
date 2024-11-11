@@ -45,7 +45,9 @@ static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getSerialPortRemo
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setSerialPortRemoteControl ) {
     if (input_value.Int) { _GUI_displayStatusMessage( "Remote control is enabled" ); }
-    *output_type = _GUI_SUBJECT_TYPE_CATEGORY__CUSTOMWRITE; IOp.RemoteControlRights->Serial_RemoteControl = input_value.Int; return input_value;
+    IOp.RemoteControlRights->Serial_RemoteControl = input_value.Int;
+    if (input_value.Int) { IOp.RemoteControlRights->Ethernet_RemoteControl = IOp.RemoteControlRights->Wifi_RemoteControl = 0; _GUI_refreshScreenModifiers( _GUI_Modifiers__Communications ); } //only 1 remote-control allowed at a time according to specs
+    *output_type = _GUI_SUBJECT_TYPE_CATEGORY__CUSTOMWRITE; return input_value;
 }
 
 
@@ -97,8 +99,11 @@ static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setEthernetDHCP )
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getEthernetRemoteControl )
 { *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT; return (_GUI_ValueContainer) { .Int = IOp.RemoteControlRights->Ethernet_RemoteControl }; }
 
-static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setEthernetRemoteControl )
-{ *output_type = _GUI_SUBJECT_TYPE_CATEGORY__CUSTOMWRITE; IOp.RemoteControlRights->Ethernet_RemoteControl = input_value.Int; return input_value; }
+static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setEthernetRemoteControl ) {
+    IOp.RemoteControlRights->Ethernet_RemoteControl = input_value.Int;
+    if (input_value.Int) { IOp.RemoteControlRights->Serial_RemoteControl = IOp.RemoteControlRights->Wifi_RemoteControl = 0; _GUI_refreshScreenModifiers( _GUI_Modifiers__Communications ); } //only 1 remote-control allowed at a time according to specs
+    *output_type = _GUI_SUBJECT_TYPE_CATEGORY__CUSTOMWRITE; return input_value;
+}
 
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getWiFiAutomaticConnection )
@@ -117,8 +122,11 @@ static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setWiFiSecurityTy
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getWiFiRemoteControl )
 { *output_type = _GUI_SUBJECT_TYPE_CATEGORY__INT; return (_GUI_ValueContainer) { .Int = IOp.RemoteControlRights->Wifi_RemoteControl }; }
 
-static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setWiFiRemoteControl )
-{ *output_type = _GUI_SUBJECT_TYPE_CATEGORY__CUSTOMWRITE; IOp.RemoteControlRights->Wifi_RemoteControl = input_value.Int; return input_value; }
+static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_setWiFiRemoteControl ) {
+    IOp.RemoteControlRights->Wifi_RemoteControl = input_value.Int;
+    if (input_value.Int) { IOp.RemoteControlRights->Serial_RemoteControl = IOp.RemoteControlRights->Ethernet_RemoteControl = 0; _GUI_refreshScreenModifiers( _GUI_Modifiers__Communications ); } //only 1 remote-control allowed at a time according to specs
+    *output_type = _GUI_SUBJECT_TYPE_CATEGORY__CUSTOMWRITE; return input_value;
+}
 
 static _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getEthernetIPaddress ) {
     *output_type = _GUI_SUBJECT_TYPE_CATEGORY__STRING; return (_GUI_ValueContainer) { .Pointer = _GUI_convertIPaddressToText( * (uint8_t**) input_value.Pointer ) };

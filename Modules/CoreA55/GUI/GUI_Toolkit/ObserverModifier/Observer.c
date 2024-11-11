@@ -22,6 +22,7 @@ static inline void _GUI_refreshObserverWidget (_GUI_Observer* observer, _GUI_Val
         if (TypeCategory==_GUI_SUBJECT_TYPE_CATEGORY__INT/* || TypeCategory==_GUI_SUBJECT_TYPE_BOOL*/) {
             if (observer->DisplayedType == _GUI_DISPLAYED_TYPE__SHOW_HIDE) _GUI_conditionalShowWidget( Widget, value.Int );
             else if (observer->DisplayedType == _GUI_DISPLAYED_TYPE__DISABLE) _GUI_conditionalEnableWidget( Widget, !value.Int );
+            //else if (observer->DisplayedType == _GUI_DISPLAYED_TYPE__STRING) _GUI_setWidgetText( Widget, value.Pointer );
             else if ( lv_obj_check_type( Widget, &lv_bar_class ) ) lv_bar_set_value( Widget, value.Int, LV_ANIM_OFF );
             else _GUI_setWidgetFormattedText( Widget, observer->DisplayedType, _GUI_getFormatString( observer->FormatString_pointer,"%d" ), value.Int ); //lv_label_set_text_fmt is not enough
         }

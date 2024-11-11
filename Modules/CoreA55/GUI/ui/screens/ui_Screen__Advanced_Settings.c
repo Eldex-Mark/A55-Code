@@ -531,7 +531,9 @@ void ui_Screen__Advanced_Settings_screen_init(void)
                                            LV_STYLE_BG_OPA, _ui_theme_alpha_Blue);
 
     lv_label_set_text(ui_comp_get_child(ui_Primarybtn__Advanced_Settings__Reset,
-                                        UI_COMP_BUTTON____PRIMARYBTN_LABEL____LABEL), "Reset");
+                                        UI_COMP_BUTTON____PRIMARYBTN_LABEL____LABEL), "Reset\nDefaults");
+    lv_obj_set_style_text_align(ui_comp_get_child(ui_Primarybtn__Advanced_Settings__Reset,
+                                                  UI_COMP_BUTTON____PRIMARYBTN_LABEL____LABEL), LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_comp_get_child(ui_Primarybtn__Advanced_Settings__Reset,
                                                  UI_COMP_BUTTON____PRIMARYBTN_LABEL____LABEL), &ui_font_P2_SBold, LV_PART_MAIN | LV_STATE_DEFAULT);
 

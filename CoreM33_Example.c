@@ -74,10 +74,10 @@ static void initVariables () {
     CORE_M33__NAMESPACE_ PumpOutputRatios.Output_Ratio_Pump1 = 3; CORE_M33__NAMESPACE_ PumpOutputRatios.Output_Ratio_Pump2 = 1; CORE_M33__NAMESPACE_ PumpOutputRatios.Output_Ratio_Pump3 = 4;
     CORE_M33__NAMESPACE_ AdvancedSetup4_bits.RS_232 = 1; CORE_M33__NAMESPACE_ AdvancedSetup4_bits.RS_485 = 0;
     CORE_M33__NAMESPACE_ AnalogOutputs = (struct AnalogOutputs_t) { .Analog_Output_pump_1 = 2, .Analog_Output_pump_2 = 0, .Analog_Output_pump_3 = 1 };
-    CORE_M33__NAMESPACE_ RemoteControls.Serial_RemoteControl = 1;
+    CORE_M33__NAMESPACE_ RemoteControls.Serial_RemoteControl = 0; //1; //0; //1; //only 1 remote-control allowed at a time according to specs
     CORE_M33__NAMESPACE_ Device_ID = 20; CORE_M33__NAMESPACE_ Baud_Rate = 2; CORE_M33__NAMESPACE_ SerialSettings.Data_Bit = 3;  CORE_M33__NAMESPACE_ SerialSettings.Stop_Bit = 2;  CORE_M33__NAMESPACE_ SerialSettings.Parity_Bit = 1;
-    CORE_M33__NAMESPACE_ EthernetSettings.DHCP = 1; CORE_M33__NAMESPACE_ RemoteControls.Ethernet_RemoteControl = 1;
-    CORE_M33__NAMESPACE_ WiFiConnectionDetails.Security_Type = 2; CORE_M33__NAMESPACE_ WiFiSettings.Automatic_connection = 1; CORE_M33__NAMESPACE_ RemoteControls.Wifi_RemoteControl = 1;
+    CORE_M33__NAMESPACE_ EthernetSettings.DHCP = 1; CORE_M33__NAMESPACE_ RemoteControls.Ethernet_RemoteControl = 0; //1; //only 1 remote-control allowed at a time according to specs
+    CORE_M33__NAMESPACE_ WiFiConnectionDetails.Security_Type = 2; CORE_M33__NAMESPACE_ WiFiSettings.Automatic_connection = 1; CORE_M33__NAMESPACE_ RemoteControls.Wifi_RemoteControl = 0; //1; //only 1 remote-control allowed at a time according to specs
     CORE_M33__NAMESPACE_ Network_Details[1].Security_Type = 1; CORE_M33__NAMESPACE_ Network_Details[2].Security_Type = 2; CORE_M33__NAMESPACE_ Network_Details[3].Security_Type = 3;
     CORE_M33__NAMESPACE_ Washport_Auto = 1;
     CORE_M33__NAMESPACE_ AdvancedSetup_bits.Pressure_unit_of_measure = 1; CORE_M33__NAMESPACE_ AdvancedSetup_bits.Pressure_limit_enabled = 1;

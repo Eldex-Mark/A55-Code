@@ -41,6 +41,10 @@ _GUI_Observer _GUI_Observers__Generic_Password [] = {
 
 
 _GUI_Observer _GUI_Observers__Home [] = {
+ { _GUI_SUBJECT_TYPE__UINT8, &_GUI.RemoteControl_Active, &ui_Label__Home__ScreenTitle, _GUI_valueConverter_getHomeScreenTitle, "", _GUI_DISPLAYED_TYPE__NORMAL, { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8, &_GUI.RemoteControl_Active, &ui_Button__Home__FlowOrPressure_Up, NULL, "", _GUI_DISPLAYED_TYPE__DISABLE, { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8, &_GUI.RemoteControl_Active, &ui_Button__Home__FlowOrPressure_Down, NULL, "", _GUI_DISPLAYED_TYPE__DISABLE, { 0 } },
+ { _GUI_SUBJECT_TYPE__UINT8, &_GUI.RemoteControl_Active, &ui_Button__Home__StartStop, NULL, "", _GUI_DISPLAYED_TYPE__DISABLE, { 0 } },
  { _GUI_SUBJECT_TYPE__UINT16P, &IOp.Pressure_Target, &ui_Label__Home__MainValue, _GUI_valueConverter_getHomeMainValue, "", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },
  { _GUI_SUBJECT_TYPE__FLOATP, &IOp.FlowRate_Pump1, &ui_Label__Home__MainValue, _GUI_valueConverter_getHomeMainValue, "%.3f", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },
  { _GUI_SUBJECT_TYPE__FLOATP, &IOp.FlowRate_Pump2, &ui_Label__Home__MainValue, _GUI_valueConverter_getHomeMainValue, "%.3f", _GUI_DISPLAYED_TYPE__NORMAL,   { 0 } },

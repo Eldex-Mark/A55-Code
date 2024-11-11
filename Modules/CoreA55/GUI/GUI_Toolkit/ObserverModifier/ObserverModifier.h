@@ -67,6 +67,7 @@ typedef enum { //to override default? - but formatting string already does that
     _GUI_DISPLAYED_TYPE__PLACEHOLDER,
     _GUI_DISPLAYED_TYPE__SHOW_HIDE, //BOOL
     _GUI_DISPLAYED_TYPE__DISABLE, //BOOL
+    //_GUI_DISPLAYED_TYPE__STRING, //string-pointer coming from converter
     //_GUI_DISPLAYED_TYPE__INNERLABEL,
     //_GUI_DISPLAYED_TYPE__INT,
     //_GUI_DISPLAYED_TYPE__FLOAT,

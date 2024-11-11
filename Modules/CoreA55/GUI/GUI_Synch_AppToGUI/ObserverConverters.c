@@ -15,6 +15,10 @@ _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_VersionNumbers ) {
 }
 
 
+_GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomeScreenTitle ) {
+    *output_type = _GUI_SUBJECT_TYPE_CATEGORY__STRING; return (_GUI_ValueContainer) { .Pointer = input_value.Int? "Remote Control":"Pump Control" };
+}
+
 _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomeMainValue ) {
     static _GUI_ValueContainer Value;
     switch ( _GUI_getPumpMode( *IOp/*_GUI*/.SelectedPump__Home ) ) {

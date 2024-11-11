@@ -665,7 +665,7 @@ void ui_Screen__Maintenance_screen_init(void)
     lv_obj_set_style_pad_bottom(ui_Primarybtn__Maintenance__Next7, 14, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_label_set_text(ui_comp_get_child(ui_Primarybtn__Maintenance__Next7, UI_COMP_BUTTON____PRIMARYBTN_LABEL____LABEL),
-                      "Sensor\nHome");
+                      "Home\nPosition");
     lv_obj_set_style_text_align(ui_comp_get_child(ui_Primarybtn__Maintenance__Next7,
                                                   UI_COMP_BUTTON____PRIMARYBTN_LABEL____LABEL), LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
 

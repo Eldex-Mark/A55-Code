@@ -26,7 +26,8 @@ struct GUIprivateVariables _GUI = {
     },
     .PasswordScreen_Mode = _GUI_PASSWORD_SCREEN_MODE__CHANGE_REMOTE, .PasswordScreen_TargetScreenID = GUI_SCREEN_ID__Home, .PasswordScreen_TargetWidget = NULL, .PasswordScreen_RememberedPasswordType = -1,
     .SelectedPump__Initial_Setup = 0/*1*/, .SelectedPump__Home = 0/*1*//*2*/, .SelectedPump__Pump_Settings = 0, .SelectedPump__Maintenance = 0/*1*/, .SelectedPump__Communication_Serial = 0/*2*/,
-    .WiFi_HiddenNetwork = 0/*1*/, .Maintenance__PumpPart = 0/*1*/, .Pump_Settings__SettingID = 1/*2*/
+    .WiFi_HiddenNetwork = 0/*1*/, .Maintenance__PumpPart = 0/*1*/, .Pump_Settings__SettingID = 1/*2*/,
+    .RemoteControl_Active = 0 //collected from backend-variable states
 };
 
 

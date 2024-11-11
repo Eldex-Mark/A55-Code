@@ -74,6 +74,8 @@ void _GUI_refresh_SynchOutputs () { //Application-value/state/pointer-following 
     if (*IOp.TotalRunHours__Pump3_CheckValve >= *IOp.AlarmLifetime__Pump3_CheckValve && !TotalRunHours__Pump3_CheckValve_oneshot) {
         TotalRunHours__Pump3_CheckValve_oneshot=1; _GUI_displayStatusMessage( "Valve of Pump 3 requires maintenance" );
     }
+
+    _GUI.RemoteControl_Active = IOp.RemoteControlRights->Serial_RemoteControl || IOp.RemoteControlRights->Ethernet_RemoteControl || IOp.RemoteControlRights->Wifi_RemoteControl; //|| Ethernet_RemoteConnection; //? //see state of connection?
 }
 
 

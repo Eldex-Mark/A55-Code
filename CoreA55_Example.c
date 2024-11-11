@@ -74,6 +74,7 @@ void CoreA55_testEventFunction__Options_Set () { printf( "CoreA55 Event received
 void CoreA55_testEventFunction__RemotePassword_Set () { printf( "CoreA55 Event received from GUI: Remote-password was modified to \'%s\'.\n", RemotePassword ); }
 void CoreA55_testEventFunction__Purge () { printf( "CoreA55 Event received from GUI: Pump Control 'Purge' button was pressed.\n" ); }
 //void CoreA55_testEventFunction__StartStop () { printf( "CoreA55 Event received from GUI: Pump Control 'Start/Stop' button was pressed.\n" ); }
+void CoreA55_testEventFunction__ResetDefaults () { printf( "CoreA55 Event received from GUI: Advanced Setup 'Reset Defaults' button was pressed.\n" ); }
 void CoreA55_testEventFunction__Rinse () { printf( "CoreA55 Event received from GUI: Maintenance 'Rinse' button was pressed.\n" ); }
 void CoreA55_testEventFunction__Reset () { printf( "CoreA55 Event received from GUI: Maintenance 'Reset' button was pressed.\n" ); }
 void CoreA55_testEventFunction__ZeroPressTransducer () { printf( "CoreA55 Event received from GUI: Maintenance 'Zero Pressure Transducer' button was pressed.\n" ); }
@@ -105,6 +106,7 @@ static void initEvents () {
     CoreA55_bindEventFunction( GUI_TO_BACKEND_EVENT__Generic_Password__Ok_button, CoreA55_testEventFunction__RemotePassword_Set );
     CoreA55_bindEventFunction( GUI_TO_BACKEND_EVENT__Purge_button, CoreA55_testEventFunction__Purge );
     //CoreMessaging_bindEventFunction( GUI_TO_BACKEND_EVENT__StartStop_button, CoreA55_testEventFunction__StartStop, COREMESSAGING_ENDPOINT__CORE_A55 );
+    CoreA55_bindEventFunction( GUI_TO_BACKEND_EVENT__FactoryReset, CoreA55_testEventFunction__ResetDefaults );
     CoreA55_bindEventFunction( GUI_TO_BACKEND_EVENT__Rinse_button, CoreA55_testEventFunction__Rinse );
     CoreA55_bindEventFunction( GUI_TO_BACKEND_EVENT__Reset_button, CoreA55_testEventFunction__Reset );
     CoreA55_bindEventFunction( GUI_TO_BACKEND_EVENT__Zero_Press_Transducer_button, CoreA55_testEventFunction__ZeroPressTransducer );

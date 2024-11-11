@@ -5,6 +5,7 @@ _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_Negate );
 
 _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_VersionNumbers );
 
+_GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomeScreenTitle );
 _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomeMainValue );
 _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomePumpFlowAmount );
 _GUI_HEADER_valueConverterFunction( _GUI_valueConverter_getHomePumpRuntime );

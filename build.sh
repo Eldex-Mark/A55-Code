@@ -1,7 +1,7 @@
 #!/bin/sh
 #Build natively on Linux with GCC
 
-rm  -r  build
+#rm  -r  build
 mkdir  -p  build
 cd build
 

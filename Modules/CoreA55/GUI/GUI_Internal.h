@@ -35,6 +35,7 @@ struct GUIprivateVariables { //initialized in GUI_Internal.c
     int Pump_Settings__SettingID;
     int Maintenance__PumpPart;
     bool WiFi_HiddenNetwork;
+    int RemoteControl_Active; //collected from backend-variable states
 };
 
 
