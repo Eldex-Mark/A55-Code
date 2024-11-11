@@ -4,9 +4,9 @@
 #if 0
                 static StaticTask_t MainTask_memory;
                 #if defined(__ARMCC_VERSION)           /* AC6 compiler */
-                static uint8_t MainTask_stack[4096] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+                static uint8_t MainTask_stack[512] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
                 #else
-                static uint8_t MainTask_stack[4096] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.MainTask") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+                static uint8_t MainTask_stack[512] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.MainTask") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
                 #endif
                 #endif
 TaskHandle_t MainTask;
@@ -17,7 +17,7 @@ void rtos_startup_common_init(void);
 extern uint32_t g_fsp_common_thread_count;
 
 const rm_freertos_port_parameters_t MainTask_parameters =
-{ .p_context = (void*) 1, };
+{ .p_context = (void*) NULL, };
 
 void MainTask_create(void)
 {
@@ -31,17 +31,17 @@ void MainTask_create(void)
                     #else
     BaseType_t MainTask_create_err = xTaskCreate (
 #endif
-                                                  MainTask_func,
-                                                  (const char*) "MainTask#0", 4096 / 4, // In words, not bytes
-                                                  (void*) &MainTask_parameters, //pvParameters
-                                                  1,
+                                                       MainTask_func,
+                                                       (const char*) "MainTask", 512 / 4, // In words, not bytes
+                                                       (void*) &MainTask_parameters, //pvParameters
+                                                       1,
 #if 0
                         (StackType_t *)&MainTask_stack,
                         (StaticTask_t *)&MainTask_memory
                         #else
-                                                  &MainTask
+                                                       &MainTask
 #endif
-                                                  );
+                                                       );
 
 #if 0
                     if (NULL == MainTask)

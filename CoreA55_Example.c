@@ -58,8 +58,7 @@ enum MacineProcessFrames { //time that some states take (simulation of backgroun
 };
 
 
-
-const int CORE_A55__GUI_REFRESH_PERIOD = GUI_REFRESH_PERIOD;
+const int CORE_A55__GUI_REFRESH_PERIOD = (GUI_REFRESH_PERIOD); //ms
 
 char MachineState = DEFAULT_MACHINESTATE;
 int MachineProcessFrameCounter = 0;
@@ -148,12 +147,13 @@ void CoreA55_CoreMessaging_refresh () {
 
 void CoreA55_GUI_refresh () {
     GUI_refresh();
+    stateMachine(); //moved here now for advancing forward from splash-screen
 }
 
 void CoreA55_refresh () {
     CoreA55_CoreMessaging_refresh();
     CoreA55_GUI_refresh();
-    stateMachine();
+    //stateMachine();
 }
 
 

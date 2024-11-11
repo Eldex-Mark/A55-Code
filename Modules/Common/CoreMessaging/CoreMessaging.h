@@ -13,7 +13,9 @@ enum {
     COREMESSAGING_ENDPOINT_AMOUNT, //must be the last endpoint entry
 
     COREMESSAGING_EVENT_AMOUNT_MAX = 100,
-    COREMESSAGING_EVENT_AMOUNT = COREMESSAGING_EVENT_AMOUNT_MAX //GUI_TO_BACKEND_EVENT__AMOUNT
+    COREMESSAGING_EVENT_AMOUNT = COREMESSAGING_EVENT_AMOUNT_MAX, //GUI_TO_BACKEND_EVENT__AMOUNT
+
+    COREMESSAGING_MESSAGE_SIZE_MAX = 4000,
 };
 
 
@@ -38,6 +40,14 @@ typedef enum { //order of INTs is important for checking INT type
     COREMESSAGING_VARIABLE_TYPE__FLOAT__END
 
 } CoreMessaging_VariableTypes;
+
+
+typedef enum { //messages should start with 16 bit big-endian overall size (including size bytes), a message can contain more instructions (command+data elements)
+    COREMESSAGING_COMMAND__SET_VARIABLE, //set variable on the other core, command followed by 1-byte variable-ID (variabledescriptor-table index) then 1..X bytes of values (depending on size and type in variable-table)
+    COREMESSAGING_COMMAND__GET_VARIABLE, //get variable from the other core, command followed by 1-byte variable-ID, will initiate the other core to send a 'send value' event
+    COREMESSAGING_COMMAND__SEND_VALUE, //send the value(s) to the other core as a reply to get-variable command, command followed by 1-byte variable-ID, then the values
+    COREMESSAGING_COMMAND__SEND_EVENT //send an event to the other core, command followed by 1-byte event-ID (enumeration value), then 1-byte with amount of arguments, then arguments themselves: 1-byte type (tells one value's size), 1/2bytes of count of values, then the values themselves
+} CoreMessaging_Commands;
 
 
 typedef union {

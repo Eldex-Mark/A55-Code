@@ -1,0 +1,29 @@
+#include <metal/alloc.h>
+#include <openamp/rpmsg.h>
+
+int main(void)
+{
+    void *tx_buf;
+    uint32_t *data;
+    struct rpmsg_endpoint *ept;  // You'll initialize this as per your setup
+    
+    // Allocate buffer once
+    tx_buf = metal_allocate_memory(512);  // or whatever size you need
+    if (!tx_buf)
+        return -ENOMEM;
+    
+    // Use the buffer directly
+    data = (uint32_t *)tx_buf;
+    data[0] = 0xdeadbeef;  // Write directly to the buffer
+    
+    // Send message
+    rpmsg_send(ept, tx_buf, sizeof(uint32_t));
+    
+    // Reuse same buffer for next message
+    data[0] = 0x12345678;
+    rpmsg_send(ept, tx_buf, sizeof(uint32_t));
+    
+    // Free only when program ends
+    metal_free_memory(tx_buf);
+    return 0;
+}

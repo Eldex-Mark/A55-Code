@@ -127,22 +127,22 @@ void initEvents () {
 }
 
 
-void CoreM33_init () {
-
+void CoreM33_CoreMessaging_init () {
     CoreMessaging_init( GUI_API_VariableDescriptors, COREMESSAGING_ENDPOINT__CORE_M33 );  //CoreM33_CoreMessaging_init();
-
     initVariables();
     initEvents();
 }
 
+void CoreM33_init () { CoreM33_CoreMessaging_init(); }
 
-void CoreM33_refresh () {
 
+void CoreM33_CoreMessaging_refresh () {
     CoreMessaging_refresh( GUI_API_VariableDescriptors, COREMESSAGING_ENDPOINT__CORE_M33, COREMESSAGING_ENDPOINT__CORE_A55 );  //CoreM33_CoreMessaging_refresh();
     //printf( "CoreM33_CoreMessaging: GUI_Version: %d, Firmware_Version: %d\n", CORE_M33__NAMESPACE_ GUI_Version, CORE_M33__NAMESPACE_ Firmware_Version );
-
     stateMachine();
 }
+
+void CoreM33_refresh () { CoreM33_CoreMessaging_refresh(); }
 
 
 static void stateMachine () { //TestBench state machine

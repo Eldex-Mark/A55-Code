@@ -7,6 +7,8 @@
 
 
 void CoreM33_init ();
+ void CoreM33_CoreMessaging_init ();
 
 void CoreM33_refresh ();
+ void CoreM33_CoreMessaging_refresh ();
 

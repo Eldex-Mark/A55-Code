@@ -28,7 +28,7 @@ static char *svc_name = NULL;
 
 static int shutdown_msg = SHUTDOWN_MSG;
 
-static char test_payload [] = "This is a test clock/sync signal for MHU communication from A55 core.\n";
+char test_payload [] = "This is a test clock/sync signal for MHU communication from A55 core.\n";
 
 
 
@@ -130,6 +130,9 @@ int CoreMessagingDriver_init () {
 int CoreMessagingDriver_refresh () {
     int ret = 0;
     static int size = sizeof( test_payload );
+
+    static int counter;
+    test_payload[50] = (counter++) & 0x7F; //A55 allows change, why M33 doesn't then?
 
     ret = rpmsg_send( &rp_ept, test_payload, size );
     if (ret < 0) { LPRINTF( "Error sending data...%d\n", ret ); return -1; }

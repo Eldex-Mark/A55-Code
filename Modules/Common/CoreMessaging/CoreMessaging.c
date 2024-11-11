@@ -13,9 +13,23 @@
 #endif
 
 
+
 static CoreMessaging_EndPointDescriptor CoreMessaging_EndPoints [COREMESSAGING_ENDPOINT_AMOUNT];
 
 static CoreMessaging_EventDescriptor CoreMessaging_Events [COREMESSAGING_ENDPOINT_AMOUNT] [COREMESSAGING_EVENT_AMOUNT_MAX];
+
+static uint8_t CoreMessaging_Incoming_Message [COREMESSAGING_MESSAGE_SIZE_MAX];
+static uint8_t CoreMessaging_Outgoing_Message [COREMESSAGING_MESSAGE_SIZE_MAX];
+
+static int CoreMessaging_Incoming_ByteCount = 0;
+static int CoreMessaging_Outgoing_ByteCount = 0;
+
+
+
+//Serializing variables/arrays/events for inter-CPU messaging:
+#if ( ( defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) && SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) || ( defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) && SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )
+__attribute__((always_inline)) static inline void CoreMessaging_appendMessage (uint8_t value ) { CoreMessaging_Outgoing_Message[ CoreMessaging_Outgoing_ByteCount++ ] = value; }
+#endif
 
 
 
@@ -108,11 +122,13 @@ static inline bool CoreMessaging_checkValueChange ( CoreMessaging_VariableTypes 
 
 __attribute__((always_inline))
 static inline void CoreMessaging_sendValue (int variable_index, CoreMessaging_VariableTypes type, CoreMessaging_ValueContainer value, int target_endpoint_index) {
+   #if ( ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) && ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )  //for now we don't want segfault with an uninitialized array of a single core
     static CoreMessaging_VariableDescriptor* TargetVariables;  //printf("Sending value %d to variable at index %d at endpoint %d\n", value.Int, variable_index, target_endpoint_index );
     TargetVariables = CoreMessaging_EndPoints[ target_endpoint_index ].Variables;
-   #if ( ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) && ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )  //for now we don't want segfault with an uninitialized array of a single core
     CoreMessaging_castValueToVariable( type, value, TargetVariables[ variable_index ].VariablePointer );
     TargetVariables[ variable_index ].PreviousValue = value; //avoid triggering of a false 'change' at the endpoint
+   #else
+    CoreMessaging_appendMessage( COREMESSAGING_COMMAND__SET_VARIABLE ); CoreMessaging_appendMessage( variable_index ); //CoreMessaging_appendMessage( value );
    #endif
 }
 
@@ -129,11 +145,17 @@ static inline int CoreMessaging_checkArrayChange ( CoreMessaging_VariableDescrip
 __attribute__((always_inline))
 static inline void CoreMessaging_sendArray (CoreMessaging_VariableDescriptor* variable_descriptors, int index, size_t start_index, size_t array_size, int target_endpoint_index) {
     static size_t j;
+   #if ( ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) && ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )  //for now we don't want segfault with an uninitialized array of a single core
     static CoreMessaging_VariableDescriptor* TargetVariables;
     TargetVariables = CoreMessaging_EndPoints[ target_endpoint_index ].Variables;
+   #else
+    CoreMessaging_appendMessage( COREMESSAGING_COMMAND__SET_VARIABLE ); CoreMessaging_appendMessage( index );
+   #endif
     for (j = start_index /*0*/; j < array_size; ++j) { //update starting from the changed point
        #if ( ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) && ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )  //for now we don't want segfault with an uninitialized array of a single core
         ( (uint8_t*) TargetVariables[ index ].VariablePointer )[ j ] =
+       #else
+        //CoreMessaging_appendMessage( value );
        #endif
         ( (uint8_t*) variable_descriptors[ index ].PreviousValue.Pointer )[ j ] = ( (uint8_t*) variable_descriptors[ index ].VariablePointer )[ j ]; //refresh array (or changed part of array if possible);
     }
@@ -153,10 +175,12 @@ static inline bool CoreMessaging_checkEventReceipt (int event_index, int endpoin
 
 __attribute__((always_inline))
 inline void CoreMessaging_sendEvent (int event_id, int target_endpoint_index) {
+   #if ( ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) && ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )  //for now we don't want segfault with an uninitialized array of a single core
     static CoreMessaging_EventDescriptor* TargetEvents;
     TargetEvents = CoreMessaging_EndPoints[ target_endpoint_index ].Events;
-   #if ( ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_M33) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_M33 ) && ( !defined(SQUARELINE_BUILD_TARGET__BOARD__CORE_A55) || !SQUARELINE_BUILD_TARGET__BOARD__CORE_A55 ) )  //for now we don't want segfault with an uninitialized array of a single core
     TargetEvents[ event_id ].Triggered = true;
+   #else
+    CoreMessaging_appendMessage( COREMESSAGING_COMMAND__SEND_EVENT ); CoreMessaging_appendMessage( event_id );
    #endif
 }
 
@@ -201,6 +225,8 @@ void CoreMessaging_refresh (CoreMessaging_VariableDescriptor* variable_descripto
     static int i, ChangeIndex;
     static size_t ArraySize;
     static CoreMessaging_ValueContainer CurrentValue;
+
+    CoreMessaging_Outgoing_ByteCount = 0; //2; leave place for upcoming 'message-size' bytes, if messaging protocol doesn't add it or send length/delimiter
 
     for (i=0; variable_descriptors[i].Type != COREMESSAGING_VARIABLE_TYPE__END; ++i) {
         if (variable_descriptors[i].Count <= 1) { //check if single value changed
